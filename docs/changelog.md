@@ -1,5 +1,24 @@
 # Changelog
 
+## v0.5.0 (2026-05-19)
+
+### Added
+- **Radar chart** — `radar()` polar spider chart for multi-dimensional comparison with optional fill
+- **Waterfall chart** — `waterfall()` sequential bridge chart with green/red/blue color coding
+- **Gantt chart** — `gantt()` project timeline with colored horizontal bars on dotted timeline
+- **Step chart** — `step()` stair-step transitions with multi-series, grid, thresholds support
+- **Bubble chart** — `bubble()` scatter plot with variable bubble sizes using `· o O @` characters
+- **Strip plot** — `strip()` 1D distribution with stacked dots and summary statistics
+- **Docker support** — `Dockerfile` and `.dockerignore` for containerized usage
+- **Shell scripts** — `run.ps1`, `run.cmd`, `run.sh` launcher scripts for all platforms
+- **CLI expanded** — `termtplotlib` now supports `--type step`, `bubble`, `strip`, `waterfall`, `gantt`, `radar`
+
+### Changed
+- Updated CLI to support 12 chart types (was 6)
+- Updated docs, README, and examples for 22 total chart types
+
+---
+
 ## v0.4.0 (2026-05-19)
 
 ### Added

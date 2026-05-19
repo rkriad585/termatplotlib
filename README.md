@@ -4,7 +4,7 @@ A lightweight and elegant Python library for rendering stunning ASCII plots dire
 
 ## Features
 
-- **16 Chart Types** — Bar, grouped bar, stacked bar, diverging bar, vertical bar, scatter, line, pie, histogram, area, box plot, violin plot, heatmap, calendar heatmap, candlestick, sparkline.
+- **22 Chart Types** — Bar, grouped bar, stacked bar, diverging bar, vertical bar, scatter, line, pie, histogram, area, box plot, violin plot, heatmap, calendar heatmap, candlestick, sparkline, radar, waterfall, gantt, step chart, bubble chart, strip plot.
 - **Logarithmic Axes** — `log_x` / `log_y` for scatter, line, and area charts.
 - **Error Bars** — `error_y` for bar, scatter, and line charts.
 - **Threshold Lines** — Horizontal/vertical reference lines on scatter/line charts.
@@ -146,6 +146,47 @@ tpl.violinplot([[1, 2, 3, 4, 5], [2, 3, 4, 5, 6]],
 tpl.calendar_heatmap({"2026-01-01": 5, "2026-06-15": 10}, title="Activity")
 ```
 
+### Radar Chart
+```python
+tpl.radar(["Speed", "Power", "Agility", "Stamina", "Intelligence"],
+          [8, 6, 9, 5, 7], width=30, title="Attributes", fill=True, color="red")
+```
+
+### Waterfall Chart
+```python
+tpl.waterfall(["Revenue", "Costs", "Tax", "Net Profit"],
+              [1000, -300, -100, 600], width=60, title="P&L Bridge")
+```
+
+### Gantt Chart
+```python
+tasks = [
+    {'label': 'Research', 'start': 0, 'end': 5},
+    {'label': 'Design',   'start': 3, 'end': 8},
+    {'label': 'Dev',      'start': 6, 'end': 12},
+    {'label': 'Test',     'start': 10, 'end': 14},
+]
+tpl.gantt(tasks, width=60, title="Project Timeline")
+```
+
+### Step Chart
+```python
+tpl.step([{'x': [0, 1, 2, 3], 'y': [0, 1, 1, 4]}],
+         width=40, height=15, title="Step", grid=True, legend=True)
+```
+
+### Bubble Chart
+```python
+tpl.bubble([{'x': [1, 2, 3, 4], 'y': [10, 20, 15, 30],
+             'size': [2, 8, 4, 12], 'label': 'Products'}],
+           width=40, height=15, title="Bubble Chart", legend=True)
+```
+
+### Strip Plot
+```python
+tpl.strip([1, 2, 2, 3, 3, 3, 4, 5, 6], width=40, title="Distribution", color="cyan")
+```
+
 ### Figure (Multi-Chart Layout)
 ```python
 fig = tpl.Figure(title="Dashboard")
@@ -185,25 +226,31 @@ echo "10,20,15,30,25" | termatplotlib --type bar --labels "A B C D E" --title "D
 | Parameter | Used By | Description |
 |-----------|---------|-------------|
 | `title` | All | Chart title centered at top |
-| `color` | bar, scatter, line, hist, boxplot, heatmap, sparkline | Chart color (named) |
+| `color` | bar, scatter, line, hist, boxplot, heatmap, sparkline, radar, strip | Chart color (named) |
 | `colors` | grouped_bar, stacked_bar, diverging_bar | List of colors per series |
+| `colors_list` | radar | List of axis colors |
 | `output_file` | All | Save to file (no ANSI codes) |
-| `legend` | scatter, line, area, pie | Show data legend |
-| `width` | scatter, line, area, boxplot, heatmap, vertical_bar | Plot width in chars |
-| `height` | scatter, line, area, hist, boxplot, vertical_bar, violin, candlestick | Plot height in chars |
-| `max_width` | bar, grouped_bar, stacked_bar, diverging_bar | Max chart width |
+| `legend` | scatter, line, area, pie, step, bubble | Show data legend |
+| `width` | scatter, line, area, boxplot, heatmap, vertical_bar, radar, bubble, gantt | Plot width in chars |
+| `height` | scatter, line, area, hist, boxplot, vertical_bar, violin, candlestick, bubble, strip | Plot height in chars |
+| `max_width` | bar, grouped_bar, stacked_bar, diverging_bar, waterfall | Max chart width |
 | `bins` | hist | Number of histogram bins |
-| `marker` | scatter, line, area (per series) | Point marker character |
+| `marker` | scatter, line, area, bubble (per series) | Point marker character |
 | `stacked` | area | Stack series on top of each other |
 | `log_x`, `log_y` | scatter, line, area | Logarithmic axes |
 | `error_y` | bar (function param), scatter, line (per series) | Error bar magnitude |
-| `grid` | scatter, line, area | Show grid lines |
-| `xlim`, `ylim` | scatter, line, area | Custom axis limits |
-| `thresholds` | scatter, line | Reference lines `[{axis, value, color, char}]` |
+| `grid` | scatter, line, area, step | Show grid lines |
+| `xlim`, `ylim` | scatter, line, area, step | Custom axis limits |
+| `thresholds` | scatter, line, step | Reference lines `[{axis, value, color, char}]` |
 | `custom_xticks`, `custom_yticks` | scatter, line, area | Explicit tick positions |
 | `tick_formatter` | scatter, line, area | Custom tick label formatter |
 | `palette` | heatmap, calendar_heatmap | List of colors for data range |
 | `baseline` | diverging_bar | Center value for divergence |
+| `color_up`, `color_down`, `color_total` | candlestick, waterfall | Directional colors |
+| `fill` | radar | Fill polygon interior |
+| `scale_max` | radar | Fixed scale maximum |
+| `bar_char` | gantt | Character for bar drawing |
+| `jitter` | strip | Stack dots in columns |
 
 ## Configuration System
 
@@ -237,7 +284,37 @@ echo "1,5,22,13,5,8,3,10" | termatplotlib --type sparkline --color green
 
 # Histogram from stdin
 echo "1 2 2 3 3 3 4 5 5 6" | termatplotlib --type hist --bins 5 --title "Distribution"
+
+# Step chart from stdin
+seq 1 10 | termatplotlib --type step --title "Step" --grid
+
+# Strip plot from stdin
+echo "1 1 1 2 2 3 3 3 3 4 5 5 6" | termatplotlib --type strip --color cyan
+
+# Radar chart from stdin
+echo "8 6 9 5 7" | termatplotlib --type radar --labels "Speed Power Agility Stamina Intel" --color red
 ```
+
+## Docker
+
+```bash
+# Build the image
+docker build -t termatplotlib .
+
+# Run as CLI
+docker run --rm termatplotlib -- --type bar --labels "A B C" --data "10 20 15"
+
+# Run with pipe
+echo "1,5,22,13,5" | docker run --rm -i termatplotlib --type sparkline --color green
+```
+
+## Scripts
+
+| Script | Platform | Usage |
+|--------|----------|-------|
+| `run.sh` | Unix/macOS | `./run.sh bar --labels "A B" --data "10 20"` |
+| `run.cmd` | Windows CMD | `run.cmd bar --labels "A B" --data "10 20"` |
+| `run.ps1` | Windows PowerShell | `.\run.ps1 bar --labels "A B" --data "10 20"` |
 
 ## Running Tests
 

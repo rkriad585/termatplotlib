@@ -728,6 +728,171 @@ class TestTickFormatter:
                  tick_formatter=lambda v: f"{v:.2f}")
 
 
+class TestRadar:
+    def test_basic_radar(self):
+        tpl.radar(["A", "B", "C", "D"], [5, 8, 3, 6], width=30)
+
+    def test_radar_with_title(self):
+        tpl.radar(["A", "B", "C"], [5, 8, 3], width=30, title="Radar")
+
+    def test_radar_with_color(self):
+        tpl.radar(["A", "B", "C"], [5, 8, 3], width=30, color="red")
+
+    def test_radar_with_fill(self):
+        tpl.radar(["A", "B", "C"], [5, 8, 3], width=30, fill=True, color="cyan")
+
+    def test_radar_few_categories(self):
+        tpl.radar(["A", "B"], [5, 8], width=30)
+
+    def test_radar_empty(self):
+        tpl.radar([], [], width=30)
+
+    def test_radar_output_file(self):
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.txt', delete=False) as f:
+            path = f.name
+        try:
+            tpl.radar(["A", "B", "C"], [5, 8, 3], width=30, color="green", output_file=path)
+            content = _read_file(path)
+            assert not _has_ansi(content)
+        finally:
+            os.unlink(path)
+
+
+class TestWaterfall:
+    def test_basic_waterfall(self):
+        tpl.waterfall(["Start", "+Rev", "-Cost", "End"], [100, 50, -30, 120], width=60)
+
+    def test_waterfall_with_title(self):
+        tpl.waterfall(["A", "B", "C"], [10, 20, -5], width=60, title="Waterfall")
+
+    def test_waterfall_empty(self):
+        tpl.waterfall([], [], width=60)
+
+    def test_waterfall_output_file(self):
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.txt', delete=False) as f:
+            path = f.name
+        try:
+            tpl.waterfall(["A", "B", "C"], [10, -5, 15], width=60, output_file=path)
+            content = _read_file(path)
+            assert not _has_ansi(content)
+        finally:
+            os.unlink(path)
+
+
+class TestGantt:
+    def test_basic_gantt(self):
+        tasks = [
+            {'label': 'Research', 'start': 0, 'end': 5},
+            {'label': 'Design', 'start': 3, 'end': 8},
+            {'label': 'Implement', 'start': 6, 'end': 12},
+        ]
+        tpl.gantt(tasks, width=60)
+
+    def test_gantt_with_title(self):
+        tasks = [
+            {'label': 'Task A', 'start': 0, 'end': 5},
+            {'label': 'Task B', 'start': 2, 'end': 8},
+        ]
+        tpl.gantt(tasks, width=60, title="Project")
+
+    def test_gantt_empty(self):
+        tpl.gantt([], width=60)
+
+    def test_gantt_output_file(self):
+        tasks = [
+            {'label': 'A', 'start': 0, 'end': 5},
+            {'label': 'B', 'start': 3, 'end': 10},
+        ]
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.txt', delete=False) as f:
+            path = f.name
+        try:
+            tpl.gantt(tasks, width=60, output_file=path)
+            content = _read_file(path)
+            assert not _has_ansi(content)
+        finally:
+            os.unlink(path)
+
+
+class TestStep:
+    def test_basic_step(self):
+        tpl.step([{'x': [0, 1, 2, 3], 'y': [0, 1, 1, 4]}], width=30, height=10)
+
+    def test_step_with_title(self):
+        tpl.step([{'x': [0, 1, 2], 'y': [0, 3, 1]}], width=30, height=10, title="Step")
+
+    def test_step_multi_series(self):
+        tpl.step([
+            {'x': [0, 1, 2], 'y': [0, 2, 4], 'color': 'red', 'label': 'Fast'},
+            {'x': [0, 1, 2], 'y': [0, 1, 2], 'color': 'blue', 'label': 'Slow'},
+        ], width=30, height=10, legend=True)
+
+    def test_step_empty(self):
+        tpl.step([], width=30, height=10)
+
+    def test_step_output_file(self):
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.txt', delete=False) as f:
+            path = f.name
+        try:
+            tpl.step([{'x': [0, 1, 2], 'y': [0, 2, 4]}], width=30, height=10, output_file=path)
+            content = _read_file(path)
+            assert not _has_ansi(content)
+        finally:
+            os.unlink(path)
+
+
+class TestBubble:
+    def test_basic_bubble(self):
+        tpl.bubble([{'x': [1, 2, 3], 'y': [4, 5, 6], 'size': [2, 5, 8]}], width=30, height=12)
+
+    def test_bubble_with_title(self):
+        tpl.bubble([{'x': [1, 2, 3], 'y': [4, 5, 6], 'size': [2, 5, 8]}],
+                   width=30, height=12, title="Bubble")
+
+    def test_bubble_multi_series(self):
+        tpl.bubble([
+            {'x': [1, 2], 'y': [3, 4], 'size': [2, 6], 'color': 'red', 'label': 'A'},
+            {'x': [3, 4], 'y': [5, 6], 'size': [4, 8], 'color': 'blue', 'label': 'B'},
+        ], width=30, height=12, legend=True)
+
+    def test_bubble_empty(self):
+        tpl.bubble([], width=30, height=12)
+
+    def test_bubble_output_file(self):
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.txt', delete=False) as f:
+            path = f.name
+        try:
+            tpl.bubble([{'x': [1, 2], 'y': [4, 5], 'size': [3, 7]}],
+                       width=30, height=12, output_file=path)
+            content = _read_file(path)
+            assert not _has_ansi(content)
+        finally:
+            os.unlink(path)
+
+
+class TestStrip:
+    def test_basic_strip(self):
+        tpl.strip([1, 2, 2, 3, 3, 3, 4, 5, 5, 6], width=30)
+
+    def test_strip_with_title(self):
+        tpl.strip([1, 2, 3, 4, 5], width=30, title="Distribution")
+
+    def test_strip_with_color(self):
+        tpl.strip([1, 2, 3], width=30, color="red")
+
+    def test_strip_empty(self):
+        tpl.strip([], width=30)
+
+    def test_strip_output_file(self):
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.txt', delete=False) as f:
+            path = f.name
+        try:
+            tpl.strip([1, 2, 3, 4, 5], width=30, color="blue", output_file=path)
+            content = _read_file(path)
+            assert not _has_ansi(content)
+        finally:
+            os.unlink(path)
+
+
 class TestEdgeCases:
     def test_all_charts_render(self):
         """Smoke test - all chart types render without crashing"""
@@ -746,6 +911,12 @@ class TestEdgeCases:
         tpl.sparkline([1, 2, 3])
         tpl.violinplot([[1, 2, 3]], width=20, height=10)
         tpl.calendar_heatmap({"2026-01-01": 1})
+        tpl.radar(["A", "B", "C"], [5, 8, 3], width=20)
+        tpl.waterfall(["A", "B", "C"], [10, 20, -5], width=40)
+        tpl.gantt([{'label': 'A', 'start': 0, 'end': 5}], width=40)
+        tpl.step([{'x': [0, 1, 2], 'y': [0, 1, 4]}], width=20, height=8)
+        tpl.bubble([{'x': [1, 2], 'y': [3, 4], 'size': [2, 6]}], width=20, height=8)
+        tpl.strip([1, 2, 3, 4, 5], width=20)
 
     def test_boxplot_identical_values(self):
         tpl.boxplot([[5, 5, 5, 5], [3, 3, 3]], width=20, height=10)

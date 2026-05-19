@@ -301,3 +301,46 @@ print("\n--- Example 41: Theme System ---")
 tpl.apply_theme('monokai')
 tpl.bar(["A", "B", "C"], [10, 20, 15], max_width=40, title="Monokai Theme")
 tpl.reset_defaults()
+
+# Example 42: Radar chart
+print("\n--- Example 42: Radar Chart ---")
+tpl.radar(["Speed", "Power", "Agility", "Stamina", "Intelligence"],
+          [8, 6, 9, 5, 7], width=30, title="Player Attributes", fill=True, color="red")
+
+# Example 43: Waterfall chart
+print("\n--- Example 43: Waterfall Chart ---")
+tpl.waterfall(["Revenue", "COGS", "R&D", "Marketing", "Net Profit"],
+              [1000, -400, -200, -100, 300], width=60, title="P&L Bridge",
+              color_up="green", color_down="red", color_total="blue")
+
+# Example 44: Gantt chart
+print("\n--- Example 44: Gantt Chart ---")
+tpl.gantt([
+    {'label': 'Research',  'start': 0,  'end': 5},
+    {'label': 'Design',    'start': 3,  'end': 8},
+    {'label': 'Frontend',  'start': 6,  'end': 12},
+    {'label': 'Backend',   'start': 7,  'end': 13},
+    {'label': 'Testing',   'start': 11, 'end': 15},
+    {'label': 'Launch',    'start': 14, 'end': 16},
+], width=60, title="Project Timeline")
+
+# Example 45: Step chart
+print("\n--- Example 45: Step Chart ---")
+tpl.step([
+    {'x': [0, 1, 2, 3, 4, 5], 'y': [0, 0, 3, 3, 7, 7], 'label': 'Stairs', 'color': 'cyan'},
+    {'x': [0, 1, 2, 3, 4, 5], 'y': [0, 2, 2, 5, 5, 8], 'label': 'Ramp', 'color': 'magenta'},
+], width=40, height=14, title="Step Comparison", legend=True, grid=True)
+
+# Example 46: Bubble chart
+print("\n--- Example 46: Bubble Chart ---")
+tpl.bubble([{'x': [1, 2, 3, 4, 5], 'y': [10, 25, 15, 30, 20],
+             'size': [2, 10, 5, 15, 8], 'label': 'Products', 'color': 'green'}],
+           width=40, height=15, title="Product Portfolio", legend=True)
+
+# Example 47: Strip plot
+print("\n--- Example 47: Strip Plot ---")
+data = []
+for _ in range(50):
+    import random
+    data.append(random.gauss(5, 1.5))
+tpl.strip(data, width=40, title="Distribution", color="cyan")

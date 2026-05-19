@@ -11,6 +11,12 @@ from termatplotlib.sparkline import sparkline
 from termatplotlib.candlestick import candlestick
 from termatplotlib.violin import violinplot
 from termatplotlib.calendar_heatmap import calendar_heatmap
+from termatplotlib.radar import radar
+from termatplotlib.waterfall import waterfall
+from termatplotlib.gantt import gantt
+from termatplotlib.step import step
+from termatplotlib.bubble import bubble
+from termatplotlib.strip import strip
 from termatplotlib.figure import Figure
 from termatplotlib.utils import (
     COLORS, THEMES, get_terminal_width, strip_ansi,
@@ -31,6 +37,12 @@ __all__ = [
     'candlestick',
     'violinplot',
     'calendar_heatmap',
+    'radar',
+    'waterfall',
+    'gantt',
+    'step',
+    'bubble',
+    'strip',
     'Figure',
     'COLORS', 'THEMES', 'get_terminal_width', 'strip_ansi',
     'set_default', 'get_default', 'reset_defaults', 'apply_theme',

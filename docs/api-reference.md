@@ -20,6 +20,18 @@ import termatplotlib as tpl
 | `tpl.hist()` | Histogram |
 | `tpl.boxplot()` | Box-and-whisker plot |
 | `tpl.heatmap()` | 2D heatmap grid |
+| `tpl.vertical_bar()` | Vertical column chart |
+| `tpl.diverging_bar()` | Diverging bar chart from baseline |
+| `tpl.sparkline()` | Inline mini sparkline |
+| `tpl.candlestick()` | OHLC financial candlestick chart |
+| `tpl.violinplot()` | Violin distribution plot |
+| `tpl.calendar_heatmap()` | Year calendar heatmap grid |
+| `tpl.radar()` | Polar radar/spider chart |
+| `tpl.waterfall()` | Sequential waterfall bridge chart |
+| `tpl.gantt()` | Project timeline Gantt chart |
+| `tpl.step()` | Stair-step chart |
+| `tpl.bubble()` | Bubble chart with variable sizes |
+| `tpl.strip()` | 1D strip/dot distribution plot |
 
 ### Figure API
 

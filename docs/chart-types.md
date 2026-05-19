@@ -231,3 +231,141 @@ tpl.heatmap(
 ```
 
 Uses 5 intensity levels (space → `░` → `▒` → `▓` → `█`). Supports custom color palettes with multi-color gradients.
+
+---
+
+## radar
+
+Polar radar/spider chart for multi-dimensional comparison. Renders a circular grid with labeled axes radiating from center.
+
+```python
+tpl.radar(
+    labels: List[str],
+    values: List[float],
+    width: int = 40,
+    title: Optional[str] = None,
+    fill: bool = False,
+    color: Optional[str] = None,
+    colors_list: Optional[List[str]] = None,
+    scale_max: Optional[float] = None,
+    output_file: Optional[str] = None,
+)
+```
+
+Requires at least 3 categories. Each axis is labeled with its value. Optional `fill=True` shades the polygon interior.
+
+---
+
+## waterfall
+
+Sequential bridge chart for financial or cumulative analysis. Shows running total as each value adds or subtracts.
+
+```python
+tpl.waterfall(
+    labels: List[str],
+    values: List[float],
+    width: Optional[int] = None,
+    title: Optional[str] = None,
+    xlabel: Optional[str] = None,
+    ylabel: Optional[str] = None,
+    color_up: Optional[str] = None,
+    color_down: Optional[str] = None,
+    color_total: Optional[str] = None,
+    output_file: Optional[str] = None,
+)
+```
+
+Uses green for positive, red for negative, and blue for the final total bar. Running cumulative value shown per bar.
+
+---
+
+## gantt
+
+Timeline/Gantt chart for project scheduling and task tracking.
+
+```python
+tpl.gantt(
+    tasks: List[dict],      # [{label, start, end, color}]
+    width: Optional[int] = None,
+    title: Optional[str] = None,
+    xlabel: Optional[str] = None,
+    bar_char: str = '█',
+    colors: Optional[List[str]] = None,
+    output_file: Optional[str] = None,
+)
+```
+
+Each task has a `start` and `end` (numeric time units), an optional `label` and `color`. Tasks render as colored horizontal bars on a dotted timeline.
+
+---
+
+## step
+
+Step chart connecting points with horizontal-then-vertical transitions (stair-step). Useful for discrete changes over time.
+
+```python
+tpl.step(
+    data: List[dict],       # [{x, y, color, marker, label}]
+    width: Optional[int] = None,
+    height: int = 15,
+    title: Optional[str] = None,
+    xlabel: Optional[str] = None,
+    ylabel: Optional[str] = None,
+    legend: bool = False,
+    grid: bool = False,
+    xlim: Optional[List[float]] = None,
+    ylim: Optional[List[float]] = None,
+    color: Optional[str] = None,
+    thresholds: Optional[List[dict]] = None,
+    custom_xticks: Optional[List[float]] = None,
+    custom_yticks: Optional[List[float]] = None,
+    tick_formatter: Optional[Callable] = None,
+    output_file: Optional[str] = None,
+)
+```
+
+Supports multi-series, grid, thresholds, custom ticks, and legends via the same interface as scatter/line.
+
+---
+
+## bubble
+
+Scatter plot enhanced with a size dimension. Each point's marker scales according to its `size` value.
+
+```python
+tpl.bubble(
+    data: List[dict],       # [{x, y, size, color, marker, label}]
+    width: Optional[int] = None,
+    height: int = 18,
+    title: Optional[str] = None,
+    xlabel: Optional[str] = None,
+    ylabel: Optional[str] = None,
+    legend: bool = False,
+    grid: bool = False,
+    xlim: Optional[List[float]] = None,
+    ylim: Optional[List[float]] = None,
+    output_file: Optional[str] = None,
+)
+```
+
+The `size` key per series controls bubble radius. Uses characters `·`, `o`, `O`, `@` to represent increasing sizes. Surrounding halos drawn for larger bubbles.
+
+---
+
+## strip
+
+One-dimensional strip/dot plot showing distribution of values along a single axis. Dots are stacked vertically at each bucket to show density.
+
+```python
+tpl.strip(
+    data: List[float],
+    width: Optional[int] = None,
+    title: Optional[str] = None,
+    xlabel: Optional[str] = None,
+    color: Optional[str] = None,
+    jitter: bool = True,
+    output_file: Optional[str] = None,
+)
+```
+
+Shows summary statistics (n, min, max, range) below the chart. Quick distribution visualization without binning parameters.

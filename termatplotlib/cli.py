@@ -2,12 +2,14 @@ import argparse
 import sys
 from typing import List
 
-from termatplotlib import bar, scatter, line, pie, hist, sparkline
+from termatplotlib import bar, scatter, line, pie, hist, sparkline, step, bubble, strip, waterfall, gantt, radar
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="termatplotlib — ASCII plots in your terminal")
-    parser.add_argument("--type", "-t", default="bar", choices=["bar", "scatter", "line", "pie", "hist", "sparkline"],
+    parser.add_argument("--type", "-t", default="bar",
+                        choices=["bar", "scatter", "line", "pie", "hist", "sparkline",
+                                 "step", "bubble", "strip", "waterfall", "gantt", "radar"],
                         help="Chart type")
     parser.add_argument("--title", help="Chart title")
     parser.add_argument("--color", help="Chart color")
@@ -77,6 +79,25 @@ def main() -> None:
         hist(values, bins=args.bins, **chart_kwargs)
     elif args.type == "sparkline":
         sparkline(values, **chart_kwargs)
+    elif args.type == "step":
+        x_vals = list(range(len(values)))
+        data = [{'x': x_vals, 'y': values}]
+        step(data, **chart_kwargs)
+    elif args.type == "bubble":
+        x_vals = list(range(len(values)))
+        data = [{'x': x_vals, 'y': values, 'size': [5] * len(values)}]
+        bubble(data, **chart_kwargs)
+    elif args.type == "strip":
+        strip(values, **chart_kwargs)
+    elif args.type == "waterfall":
+        labels = args.labels or [str(i) for i in range(len(values))]
+        waterfall(labels, values, **chart_kwargs)
+    elif args.type == "gantt":
+        tasks = [{'label': f"Task {i}", 'start': i, 'end': i + v} for i, v in enumerate(values)] if values else []
+        gantt(tasks, **chart_kwargs)
+    elif args.type == "radar":
+        labels = args.labels or [str(i) for i in range(len(values))]
+        radar(labels, values, **chart_kwargs)
 
 
 if __name__ == "__main__":
