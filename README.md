@@ -1,116 +1,131 @@
 # termatplotlib
 
-A lightweight and elegant Python library for rendering stunning ASCII plots directly in your terminal. Visualize your data with beautiful scatter, line, and bar charts, bringing the power of matplotlib to your command line.
+A lightweight and elegant Python library for rendering stunning ASCII plots directly in your terminal. Visualize your data with beautiful scatter, line, bar, pie, histogram, area, and box plots — bringing the power of matplotlib to your command line.
 
 ## Features
 
-*   **Terminal-based Visualization:** Generate plots directly in your terminal using ASCII characters.
-*   **Multiple Chart Types:** Supports bar charts, scatter plots, line charts, pie charts, and histograms.
-*   **Customization:** Options for titles, axis labels, colors, and markers.
-*   **File Output:** Save your terminal plots to text files for sharing or later review.
-*   **Easy to Use:** Simple API designed for quick and intuitive plotting.
+- **Terminal-based Visualization** — Generate plots directly in your terminal using ASCII and Unicode characters.
+- **Multiple Chart Types** — Bar, grouped bar, stacked bar, scatter, line, pie, histogram, area (stacked too), and box plots.
+- **Customization** — Titles, axis labels, colors, markers, legends, and axis limits.
+- **File Output** — Save plots to text files for sharing (ANSI codes automatically stripped).
+- **Terminal Auto-Detect** — Automatically fits to your terminal width.
+- **Multi-Series** — Plot multiple data series on the same chart.
+- **No Dependencies** — Pure Python, no external packages required.
 
 ## Installation
 
-It is recommended to install `termatplotlib` using `pip` within a virtual environment.
-
-```bash
-# Create a virtual environment
-python -m venv venv
-
-# Activate the virtual environment
-# On Linux/macOS:
-source venv/bin/activate
-# On Windows:
-# .\venv\Scripts\activate
-
-# Install termatplotlib
-pip install termatplotlib
-```
-
-Alternatively, if you have cloned the repository, you can install it from the source:
-
 ```bash
 pip install termatplotlib
 ```
 
-## Usage
+Or from source:
 
-`termatplotlib` provides a simple API to create various types of plots.
+```bash
+git clone https://github.com/rkriad585/termatplotlib
+cd termatplotlib
+pip install .
+```
 
-### Bar Chart
+## Quick Start
 
 ```python
 import termatplotlib as tpl
 
-print("--- Example: Bar Chart ---")
-labels = ["A", "B", "C", "D"]
-values = [10, 20, 15, 5]
-tpl.bar(labels, values, title="My Bar Chart", xlabel="Value", ylabel="Category", color="red")
+# Bar chart
+tpl.bar(["A", "B", "C", "D"], [10, 20, 15, 5],
+        title="My Chart", xlabel="Value", color="red")
+```
+
+## Chart Types
+
+### Bar Chart
+```python
+tpl.bar(labels, values, title=None, xlabel=None, ylabel=None,
+        color=None, max_width=None, output_file=None)
+```
+
+### Grouped Bar Chart (multiple series side-by-side)
+```python
+tpl.grouped_bar(labels, values, title=None, xlabel=None, ylabel=None,
+                colors=None, max_width=None, output_file=None)
+```
+
+### Stacked Bar Chart
+```python
+tpl.stacked_bar(labels, values, title=None, xlabel=None, ylabel=None,
+                colors=None, max_width=None, output_file=None)
 ```
 
 ### Scatter Plot
-
 ```python
-import termatplotlib as tpl
-
-print("--- Example: Scatter Plot ---")
-x = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-y = [2, 4, 5, 7, 6, 8, 9, 10, 8, 9]
-data_scatter = [{'x': x, 'y': y, 'color': 'blue', 'marker': 'x'}]
-tpl.scatter(data_scatter, title="My Scatter Plot", xlabel="X-Axis", ylabel="Y-Axis")
+data = [
+    {'x': [1, 2, 3], 'y': [4, 5, 6], 'color': 'red', 'marker': 'o', 'label': 'Series 1'},
+]
+tpl.scatter(data, title="My Plot", xlabel="X", ylabel="Y", legend=True, output_file="plot.txt")
 ```
 
 ### Line Chart
-
 ```python
-import termatplotlib as tpl
+data = [
+    {'x': [0, 1, 2], 'y': [0, 1, 4], 'color': 'green', 'marker': '*', 'label': 'Quadratic'},
+]
+tpl.line(data, title="Line Plot", width=50, height=20, legend=True)
+```
 
-print("--- Example: Line Chart ---")
-x_line = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-y_line = [0, 1, 4, 9, 16, 25, 36, 49, 64, 81, 100]
-data_line = [{'x': x_line, 'y': y_line, 'color': 'green', 'marker': 'o'}]
-tpl.line(data_line, title="My Line Chart", xlabel="X-Axis", ylabel="Y-Axis")
+### Area Chart
+```python
+tpl.area(data, title="Area Under Curve", stacked=False, legend=True)
 ```
 
 ### Pie Chart
-
 ```python
-import termatplotlib as tpl
-
-print("--- Example: Pie Chart ---")
-labels = ["A", "B", "C", "D"]
-values = [10, 20, 15, 5]
-tpl.pie(labels, values, title="My Pie Chart")
+tpl.pie(labels, values, title="My Pie", radius=10, legend=True, output_file=None)
 ```
 
 ### Histogram
-
 ```python
-import termatplotlib as tpl
-
-print("--- Example: Histogram ---")
-data_hist = [1, 1, 2, 3, 3, 3, 4, 5, 5, 6, 7, 7, 7, 7, 8, 9, 10]
-tpl.hist(data_hist, bins=5, title="My Histogram", xlabel="Value Range", ylabel="Frequency", color="magenta")
+tpl.hist(data, bins=10, title="Histogram", xlabel="Value", ylabel="Frequency",
+         color="magenta", width=None, height=10, output_file=None)
 ```
 
-### Saving to File
-
-You can save any chart to a text file by providing the `output_file` argument (where supported).
-
+### Box Plot
 ```python
-import termatplotlib as tpl
-
-# Example: Bar chart saved to file
-labels = ["E", "F", "G"]
-values = [25, 10, 30]
-tpl.bar(labels, values, title="Another Bar Chart", color="blue", output_file="bar_chart.txt")
+tpl.boxplot(data, labels=["Group A", "Group B"], title="Comparison",
+            color="cyan", width=50, height=20, output_file=None)
 ```
 
-## Contributing
+## Parameters
 
-Contributions are welcome! Please feel free to open issues or submit pull requests on the [GitHub repository](https://github.com/rkstudio585/termatplotlib).
+| Parameter | Used By | Description |
+|-----------|---------|-------------|
+| `title` | All | Chart title centered at top |
+| `xlabel` | bar, scatter, line, hist, boxplot | X-axis label |
+| `ylabel` | bar, scatter, line, hist, boxplot | Y-axis label |
+| `color` | bar, scatter, line, hist, boxplot | Chart color (named) |
+| `colors` | grouped_bar, stacked_bar | List of colors per series |
+| `output_file` | All | Save to file (no ANSI codes) |
+| `legend` | scatter, line, area, pie | Show data legend |
+| `width` | scatter, line, area, boxplot | Plot width in chars |
+| `height` | scatter, line, area, hist, boxplot | Plot height in chars |
+| `max_width` | bar, grouped_bar, stacked_bar | Max chart width |
+| `bins` | hist | Number of histogram bins |
+| `marker` | scatter, line, area (per series) | Point marker character |
+| `stacked` | area | Stack series on top of each other |
+
+## Colors
+
+`black`, `red`, `green`, `yellow`, `blue`, `magenta`, `cyan`, `white`
+
+## Markers
+
+Any single character. Common choices: `'o'`, `'x'`, `'*'`, `'.'`, `'+'`, `'#'`
+
+## Running Tests
+
+```bash
+pytest
+```
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+MIT

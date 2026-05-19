@@ -1,8 +1,0 @@
-LICENSE
-README.md
-setup.py
-termatplotlib/__init__.py
-termatplotlib.egg-info/PKG-INFO
-termatplotlib.egg-info/SOURCES.txt
-termatplotlib.egg-info/dependency_links.txt
-termatplotlib.egg-info/top_level.txt
