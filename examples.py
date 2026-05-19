@@ -231,3 +231,73 @@ fig2.add_chart(tpl.bar, ["A", "B"], [10, 20], max_width=40)
 fig2.add_chart(tpl.hist, [1, 2, 2, 3, 3, 3, 4, 5], bins=4, width=40)
 fig2.savefig("report.txt")
 print("Saved to report.txt")
+
+# Example 33: Vertical bar chart
+print("\n--- Example 33: Vertical Bar Chart ---")
+tpl.vertical_bar(["Q1", "Q2", "Q3", "Q4"], [15, 25, 20, 30],
+                 height=12, width=30, title="Quarterly", color="blue")
+
+# Example 34: Diverging bar chart
+print("\n--- Example 34: Diverging Bar Chart ---")
+tpl.diverging_bar(["Revenue", "Cost", "Profit", "Loss"],
+                  [200, -80, 120, -50], max_width=50, title="P&L",
+                  colors=["green", "red"])
+
+# Example 35: Sparkline
+print("\n--- Example 35: Sparkline ---")
+tpl.sparkline([1, 5, 22, 13, 5, 8, 3, 10, 15, 7, 2, 6],
+              title="Sparkline Trend", color="green")
+
+# Example 36: Candlestick chart
+print("\n--- Example 36: Candlestick Chart ---")
+candle_data = [
+    {'open': 100, 'high': 110, 'low': 95, 'close': 105},
+    {'open': 105, 'high': 115, 'low': 100, 'close': 102},
+    {'open': 102, 'high': 108, 'low': 98, 'close': 107},
+    {'open': 107, 'high': 112, 'low': 103, 'close': 104},
+    {'open': 104, 'high': 118, 'low': 101, 'close': 115},
+]
+tpl.candlestick(candle_data, width=40, height=15, title="Stock Price")
+
+# Example 37: Violin plot
+print("\n--- Example 37: Violin Plot ---")
+import random
+random.seed(42)
+v_data = [
+    [random.gauss(50, 10) for _ in range(80)],
+    [random.gauss(60, 15) for _ in range(80)],
+    [random.gauss(45, 8) for _ in range(80)],
+]
+tpl.violinplot(v_data, labels=["Group A", "Group B", "Group C"],
+               width=50, height=15, title="Distribution Comparison", color="cyan")
+
+# Example 38: Calendar heatmap
+print("\n--- Example 38: Calendar Heatmap ---")
+cal_data = {}
+for d in range(1, 366):
+    import datetime
+    dt = datetime.date(2026, 1, 1) + datetime.timedelta(days=d - 1)
+    cal_data[dt.isoformat()] = int(random.random() * 15)
+tpl.calendar_heatmap(cal_data, title="Year of Activity", color="green")
+
+# Example 39: Threshold lines on scatter
+print("\n--- Example 39: Scatter with Threshold Lines ---")
+tpl.scatter([{'x': [1, 2, 3, 4, 5], 'y': [3, 6, 2, 8, 4], 'marker': 'o'}],
+            width=30, height=15, title="With Thresholds",
+            thresholds=[
+                {'axis': 'y', 'value': 5, 'color': 'red', 'char': '-'},
+                {'axis': 'y', 'value': 3, 'color': 'green', 'char': '-'},
+            ])
+
+# Example 40: Custom ticks and formatter
+print("\n--- Example 40: Custom Ticks with Currency Formatter ---")
+tpl.scatter([{'x': [1, 2, 3, 4, 5], 'y': [10, 20, 15, 30, 25]}],
+            width=30, height=15, title="Revenue",
+            custom_yticks=[10, 15, 20, 25, 30],
+            tick_formatter=lambda v: f"${v:.0f}")
+
+# Example 41: Theme system
+print("\n--- Example 41: Theme System ---")
+tpl.apply_theme('monokai')
+tpl.bar(["A", "B", "C"], [10, 20, 15], max_width=40, title="Monokai Theme")
+tpl.reset_defaults()

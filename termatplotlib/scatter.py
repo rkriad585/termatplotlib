@@ -1,5 +1,5 @@
 import math
-from typing import List, Optional, Tuple
+from typing import Callable, List, Optional, Tuple
 
 from termatplotlib.utils import COLORS, write_output, validate_data, format_plot_lines, get_default
 
@@ -28,6 +28,10 @@ def scatter(
     ylim: Optional[Tuple[float, float]] = None,
     log_x: bool = False,
     log_y: bool = False,
+    custom_xticks: Optional[List[float]] = None,
+    custom_yticks: Optional[List[float]] = None,
+    tick_formatter: Optional[Callable[[float], str]] = None,
+    thresholds: Optional[List[dict]] = None,
     _return_output: bool = False,
 ) -> Optional[List[str]]:
     width = get_default('width') or width
@@ -112,6 +116,8 @@ def scatter(
     plot_lines = format_plot_lines(
         grid_chart, width, height, min_x, max_x, min_y, max_y,
         xlabel, ylabel, grid_lines=grid, log_x=log_x, log_y=log_y,
+        custom_xticks=custom_xticks, custom_yticks=custom_yticks,
+        tick_formatter=tick_formatter, thresholds=thresholds,
     )
     output.extend(plot_lines)
 

@@ -7,7 +7,7 @@ dist/
 build/
 venv/
 .venv/
-*_plot.txt
+*.txt
 *_chart.txt
 *ogram.txt
 

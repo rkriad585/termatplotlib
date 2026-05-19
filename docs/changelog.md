@@ -1,5 +1,27 @@
 # Changelog
 
+## v0.4.0 (2026-05-19)
+
+### Added
+- **Vertical bar chart** — `vertical_bar()` with columns growing upward
+- **Diverging bar chart** — `diverging_bar()` with bars diverging from a configurable baseline
+- **Sparkline** — `sparkline()` tiny inline chart using Unicode block characters
+- **Candlestick chart** — `candlestick()` OHLC financial chart with green/red body coloring
+- **Violin plot** — `violinplot()` distribution visualization with mirrored KDE density
+- **Calendar heatmap** — `calendar_heatmap()` GitHub-style contribution grid with day-of-week rows
+- **Threshold lines** — `thresholds` parameter on scatter/line for horizontal/vertical reference lines with color and custom char
+- **Custom axis ticks** — `custom_xticks` and `custom_yticks` for explicit tick positioning
+- **Tick formatter** — `tick_formatter` callable for custom axis label formatting
+- **Theme presets** — `apply_theme()` with 7 built-in themes: default, dark, light, monokai, ocean, forest, sunset
+- **CLI stdin pipeline** — `termtplotlib` command that reads data from stdin for bar, scatter, line, pie, hist, and sparkline
+- **`THEMES` constant** — exported dict of all theme definitions
+
+### Changed
+- Updated `format_plot_lines()` with new rendering helpers: `_render_yticks`, `_render_xticks`, `_draw_thresholds`
+- All scatter/line/area signatures extended with `custom_xticks`, `custom_yticks`, `tick_formatter`, `thresholds`
+
+---
+
 ## v0.3.0 (2026-05-19)
 
 ### Added

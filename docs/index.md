@@ -1,6 +1,6 @@
 # termatplotlib
 
-**Version:** 0.3.0  
+**Version:** 0.4.0  
 **License:** MIT  
 **Author:** RK Riad Khan  
 **Repository:** [github.com/rkriad585/termatplotlib](https://github.com/rkriad585/termatplotlib)
@@ -9,12 +9,16 @@ A lightweight, zero-dependency Python library for rendering ASCII plots directly
 
 ## Features
 
-- **10+ chart types** — bar, grouped bar, stacked bar, scatter, line, pie, histogram, area, box plot, heatmap
+- **16 chart types** — bar, grouped bar, stacked bar, diverging bar, vertical bar, scatter, line, pie, histogram, area, box plot, violin plot, heatmap, calendar heatmap, candlestick, sparkline
 - **Zero dependencies** — pure Python, stdlib only, Python >=3.6
 - **Logarithmic axes** — `log_x` / `log_y` for scatter, line, area
 - **Error bars** — `error_y` on bar charts, and per-series on scatter/line
+- **Threshold lines** — horizontal/vertical reference lines on scatter/line charts
+- **Custom ticks & formatters** — `custom_xticks`, `custom_yticks`, `tick_formatter` for full axis control
+- **Theme presets** — 7 built-in themes via `apply_theme()`
 - **Multi-figure layout** — `Figure` class to compose multiple charts
 - **Configuration system** — `set_default()` / `reset_defaults()` for global styling
+- **CLI tool** — pipe data from stdin into charts via `termtplotlib` command
 - **ANSI colors** — 8 named colors for all chart elements
 - **Grid lines** — optional `+`, `-`, `|` grid overlay
 - **Legends** — auto-generated per-series legends

@@ -516,6 +516,218 @@ class TestFigure:
         fig.render()
 
 
+class TestThemes:
+    def test_apply_theme_default(self):
+        tpl.apply_theme('default')
+        assert tpl.get_default('color') is not None
+        tpl.reset_defaults()
+
+    def test_apply_theme_dark(self):
+        tpl.apply_theme('dark')
+        assert tpl.get_default('color') == 'blue'
+        tpl.reset_defaults()
+
+    def test_apply_theme_invalid(self):
+        try:
+            tpl.apply_theme('nonexistent')
+        except ValueError:
+            pass
+
+    def test_themes_present(self):
+        assert 'default' in tpl.THEMES
+        assert 'monokai' in tpl.THEMES
+        assert 'ocean' in tpl.THEMES
+
+
+class TestVerticalBar:
+    def test_basic_vertical_bar(self):
+        tpl.vertical_bar(["A", "B", "C"], [10, 20, 15], height=10, width=30)
+
+    def test_vertical_bar_with_title(self):
+        tpl.vertical_bar(["A", "B"], [10, 20], height=10, width=30, title="Test")
+
+    def test_vertical_bar_empty(self):
+        tpl.vertical_bar([], [], height=10, width=30)
+
+    def test_vertical_bar_output_file(self):
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.txt', delete=False) as f:
+            path = f.name
+        try:
+            tpl.vertical_bar(["A"], [5], height=10, width=30, output_file=path)
+            content = _read_file(path)
+            assert not _has_ansi(content)
+        finally:
+            os.unlink(path)
+
+
+class TestDivergingBar:
+    def test_basic_diverging(self):
+        tpl.diverging_bar(["A", "B", "C"], [10, -5, 3], max_width=40)
+
+    def test_diverging_with_baseline(self):
+        tpl.diverging_bar(["A", "B"], [15, 5], baseline=10, max_width=40)
+
+    def test_diverging_with_colors(self):
+        tpl.diverging_bar(["A", "B"], [10, -5], max_width=40, colors=["blue", "red"])
+
+    def test_diverging_output_file(self):
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.txt', delete=False) as f:
+            path = f.name
+        try:
+            tpl.diverging_bar(["A"], [10], max_width=40, output_file=path)
+            content = _read_file(path)
+            assert not _has_ansi(content)
+        finally:
+            os.unlink(path)
+
+
+class TestSparkline:
+    def test_basic_sparkline(self):
+        tpl.sparkline([1, 5, 22, 13, 5])
+
+    def test_sparkline_with_title(self):
+        tpl.sparkline([1, 2, 3, 4, 5], title="Trend")
+
+    def test_sparkline_with_color(self):
+        tpl.sparkline([1, 2, 3], color="green")
+
+    def test_sparkline_empty(self):
+        tpl.sparkline([])
+
+    def test_sparkline_custom_range(self):
+        tpl.sparkline([1, 2, 3], min_val=0, max_val=10)
+
+    def test_sparkline_output_file(self):
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.txt', delete=False) as f:
+            path = f.name
+        try:
+            tpl.sparkline([1, 2, 3], output_file=path)
+            content = _read_file(path)
+            assert not _has_ansi(content)
+        finally:
+            os.unlink(path)
+
+    def test_sparkline_width_sampling(self):
+        tpl.sparkline(list(range(100)), width=10)
+
+
+class TestCandlestick:
+    def test_basic_candlestick(self):
+        data = [
+            {'open': 100, 'high': 110, 'low': 95, 'close': 105},
+            {'open': 105, 'high': 115, 'low': 100, 'close': 102},
+        ]
+        tpl.candlestick(data, width=30, height=10)
+
+    def test_candlestick_with_title(self):
+        data = [{'open': 50, 'high': 55, 'low': 48, 'close': 53}]
+        tpl.candlestick(data, width=30, height=10, title="AAPL")
+
+    def test_candlestick_colors(self):
+        data = [{'open': 50, 'high': 55, 'low': 48, 'close': 53}]
+        tpl.candlestick(data, width=30, height=10, color_up="green", color_down="red")
+
+    def test_candlestick_empty(self):
+        tpl.candlestick([], width=30, height=10)
+
+    def test_candlestick_output_file(self):
+        data = [{'open': 100, 'high': 110, 'low': 95, 'close': 105}]
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.txt', delete=False) as f:
+            path = f.name
+        try:
+            tpl.candlestick(data, width=30, height=10, output_file=path)
+            content = _read_file(path)
+            assert not _has_ansi(content)
+        finally:
+            os.unlink(path)
+
+
+class TestViolin:
+    def test_basic_violin(self):
+        tpl.violinplot([[1, 2, 3, 4, 5], [2, 3, 4, 5, 6]], width=30, height=10)
+
+    def test_violin_with_labels(self):
+        tpl.violinplot([[1, 2, 3], [4, 5, 6]], labels=["A", "B"], width=30, height=10)
+
+    def test_violin_with_title(self):
+        tpl.violinplot([[1, 2, 3]], width=30, height=10, title="Distribution")
+
+    def test_violin_empty(self):
+        tpl.violinplot([[]], width=30, height=10)
+
+    def test_violin_output_file(self):
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.txt', delete=False) as f:
+            path = f.name
+        try:
+            tpl.violinplot([[1, 2, 3]], width=30, height=10, output_file=path)
+            content = _read_file(path)
+            assert not _has_ansi(content)
+        finally:
+            os.unlink(path)
+
+
+class TestCalendarHeatmap:
+    def test_basic_calendar(self):
+        tpl.calendar_heatmap({"2026-01-01": 5, "2026-06-15": 10})
+
+    def test_calendar_with_title(self):
+        tpl.calendar_heatmap({"2026-01-01": 1}, title="Contributions")
+
+    def test_calendar_empty(self):
+        tpl.calendar_heatmap({})
+
+    def test_calendar_output_file(self):
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.txt', delete=False) as f:
+            path = f.name
+        try:
+            tpl.calendar_heatmap({"2026-01-01": 1}, output_file=path)
+            content = _read_file(path)
+            assert not _has_ansi(content)
+        finally:
+            os.unlink(path)
+
+    def test_calendar_with_palette(self):
+        tpl.calendar_heatmap({"2026-01-01": 1, "2026-06-01": 10}, palette=["blue", "red"])
+
+
+class TestThresholds:
+    def test_scatter_threshold_y(self):
+        tpl.scatter([{'x': [1, 2, 3], 'y': [4, 5, 6]}], width=20, height=10,
+                    thresholds=[{'axis': 'y', 'value': 5, 'color': 'red'}])
+
+    def test_scatter_threshold_x(self):
+        tpl.scatter([{'x': [1, 2, 3], 'y': [4, 5, 6]}], width=20, height=10,
+                    thresholds=[{'axis': 'x', 'value': 2, 'color': 'blue'}])
+
+    def test_line_threshold(self):
+        tpl.line([{'x': [0, 1, 2], 'y': [0, 1, 4]}], width=20, height=10,
+                 thresholds=[{'axis': 'y', 'value': 2, 'color': 'red', 'char': '='}])
+
+
+class TestCustomTicks:
+    def test_scatter_custom_xticks(self):
+        tpl.scatter([{'x': [1, 2, 3], 'y': [4, 5, 6]}], width=20, height=10,
+                    custom_xticks=[1, 2, 3])
+
+    def test_scatter_custom_yticks(self):
+        tpl.scatter([{'x': [1, 2, 3], 'y': [4, 5, 6]}], width=20, height=10,
+                    custom_yticks=[4, 5, 6])
+
+    def test_line_custom_ticks(self):
+        tpl.line([{'x': [0, 1, 2], 'y': [0, 1, 4]}], width=20, height=10,
+                 custom_xticks=[0, 1, 2], custom_yticks=[0, 2, 4])
+
+
+class TestTickFormatter:
+    def test_scatter_formatter(self):
+        tpl.scatter([{'x': [1, 2, 3], 'y': [4, 5, 6]}], width=20, height=10,
+                    tick_formatter=lambda v: f"${v:.0f}")
+
+    def test_line_formatter(self):
+        tpl.line([{'x': [0, 1, 2], 'y': [0, 1, 4]}], width=20, height=10,
+                 tick_formatter=lambda v: f"{v:.2f}")
+
+
 class TestEdgeCases:
     def test_all_charts_render(self):
         """Smoke test - all chart types render without crashing"""
@@ -529,6 +741,11 @@ class TestEdgeCases:
         tpl.area([{'x': [0, 1], 'y': [0, 1]}], width=10, height=5)
         tpl.boxplot([[1, 2, 3]], width=20, height=10)
         tpl.heatmap([[1]], width=20)
+        tpl.vertical_bar(["A"], [5], height=10, width=20)
+        tpl.diverging_bar(["A"], [5], max_width=20)
+        tpl.sparkline([1, 2, 3])
+        tpl.violinplot([[1, 2, 3]], width=20, height=10)
+        tpl.calendar_heatmap({"2026-01-01": 1})
 
     def test_boxplot_identical_values(self):
         tpl.boxplot([[5, 5, 5, 5], [3, 3, 3]], width=20, height=10)

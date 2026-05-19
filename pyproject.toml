@@ -4,11 +4,11 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "termatplotlib"
-version = "0.3.0"
+version = "0.4.0"
 description = "A lightweight and elegant Python library for rendering stunning ASCII plots directly in your terminal."
 readme = "README.md"
 authors = [
-    {name = "RK Riad Khan", email = "rkriad585@github.com"},
+    {name = "RK Riad Khan", email = "rkriad585@gmail.com"},
 ]
 license = {text = "MIT"}
 classifiers = [
@@ -28,6 +28,9 @@ Homepage = "https://github.com/rkriad585/termatplotlib"
 testpaths = ["tests"]
 python_files = ["test_*.py"]
 addopts = "-v"
+
+[project.scripts]
+termatplotlib = "termatplotlib.cli:main"
 
 [tool.setuptools.packages.find]
 include = ["termatplotlib*"]
