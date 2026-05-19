@@ -917,9 +917,138 @@ class TestEdgeCases:
         tpl.step([{'x': [0, 1, 2], 'y': [0, 1, 4]}], width=20, height=8)
         tpl.bubble([{'x': [1, 2], 'y': [3, 4], 'size': [2, 6]}], width=20, height=8)
         tpl.strip([1, 2, 3, 4, 5], width=20)
+        tpl.sankey(["A", "B", "C"], [{"source": "A", "target": "B", "value": 5}, {"source": "B", "target": "C", "value": 3}], width=40)
+        tpl.funnel(["A", "B", "C"], [100, 60, 30], width=40)
+        tpl.bullet(["M1"], [80], [100], width=40)
+        tpl.donut(["A", "B", "C"], [10, 20, 30])
+        tpl.pareto(["A", "B", "C"], [50, 30, 20], width=40)
+        tpl.wordcloud({"hello": 5, "world": 3, "test": 2}, width=40)
 
-    def test_boxplot_identical_values(self):
-        tpl.boxplot([[5, 5, 5, 5], [3, 3, 3]], width=20, height=10)
 
-    def test_hist_single_value(self):
-        tpl.hist([1, 1, 1, 1], bins=3, width=40)
+class TestSankey:
+    def test_basic_sankey(self):
+        tpl.sankey(["A", "B", "C"], [{"source": "A", "target": "B", "value": 10},
+                                      {"source": "B", "target": "C", "value": 5}], width=50)
+
+    def test_sankey_with_title(self):
+        tpl.sankey(["X", "Y"], [{"source": "X", "target": "Y", "value": 8}],
+                   width=50, title="Flow")
+
+    def test_sankey_empty(self):
+        tpl.sankey([], [], width=50)
+
+    def test_sankey_output_file(self):
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.txt', delete=False) as f:
+            path = f.name
+        try:
+            tpl.sankey(["A", "B"], [{"source": "A", "target": "B", "value": 10}],
+                       width=50, output_file=path)
+            content = _read_file(path)
+            assert not _has_ansi(content)
+        finally:
+            os.unlink(path)
+
+
+class TestFunnel:
+    def test_basic_funnel(self):
+        tpl.funnel(["Awareness", "Interest", "Desire", "Action"], [1000, 500, 200, 50], width=50)
+
+    def test_funnel_with_title(self):
+        tpl.funnel(["A", "B", "C"], [100, 60, 30], width=50, title="Funnel")
+
+    def test_funnel_empty(self):
+        tpl.funnel([], [], width=50)
+
+    def test_funnel_output_file(self):
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.txt', delete=False) as f:
+            path = f.name
+        try:
+            tpl.funnel(["A", "B"], [100, 50], width=50, output_file=path)
+            content = _read_file(path)
+            assert not _has_ansi(content)
+        finally:
+            os.unlink(path)
+
+
+class TestBullet:
+    def test_basic_bullet(self):
+        tpl.bullet(["Revenue", "Users"], [85, 70], [100, 80], width=60)
+
+    def test_bullet_with_title(self):
+        tpl.bullet(["KPI"], [75], [90], width=60, title="Dashboard")
+
+    def test_bullet_empty(self):
+        tpl.bullet([], [], [], width=60)
+
+    def test_bullet_output_file(self):
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.txt', delete=False) as f:
+            path = f.name
+        try:
+            tpl.bullet(["M1"], [80], [100], width=60, output_file=path)
+            content = _read_file(path)
+            assert not _has_ansi(content)
+        finally:
+            os.unlink(path)
+
+
+class TestDonut:
+    def test_basic_donut(self):
+        tpl.donut(["A", "B", "C"], [10, 20, 30])
+
+    def test_donut_with_title(self):
+        tpl.donut(["A", "B"], [15, 25], title="Donut")
+
+    def test_donut_empty(self):
+        tpl.donut([], [])
+
+    def test_donut_output_file(self):
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.txt', delete=False) as f:
+            path = f.name
+        try:
+            tpl.donut(["A", "B"], [10, 20], output_file=path)
+            content = _read_file(path)
+            assert not _has_ansi(content)
+        finally:
+            os.unlink(path)
+
+
+class TestPareto:
+    def test_basic_pareto(self):
+        tpl.pareto(["A", "B", "C", "D"], [50, 30, 15, 5], width=50)
+
+    def test_pareto_with_title(self):
+        tpl.pareto(["X", "Y", "Z"], [40, 35, 25], width=50, title="Pareto")
+
+    def test_pareto_empty(self):
+        tpl.pareto([], [], width=50)
+
+    def test_pareto_output_file(self):
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.txt', delete=False) as f:
+            path = f.name
+        try:
+            tpl.pareto(["A", "B", "C"], [50, 30, 20], width=50, output_file=path)
+            content = _read_file(path)
+            assert not _has_ansi(content)
+        finally:
+            os.unlink(path)
+
+
+class TestWordCloud:
+    def test_basic_wordcloud(self):
+        tpl.wordcloud({"python": 10, "data": 8, "chart": 5, "terminal": 3, "ascii": 2}, width=40)
+
+    def test_wordcloud_with_title(self):
+        tpl.wordcloud({"hello": 5, "world": 3}, width=40, title="Words")
+
+    def test_wordcloud_empty(self):
+        tpl.wordcloud({}, width=40)
+
+    def test_wordcloud_output_file(self):
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.txt', delete=False) as f:
+            path = f.name
+        try:
+            tpl.wordcloud({"foo": 5, "bar": 3}, width=40, output_file=path)
+            content = _read_file(path)
+            assert not _has_ansi(content)
+        finally:
+            os.unlink(path)

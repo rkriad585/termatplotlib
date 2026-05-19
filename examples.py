@@ -344,3 +344,43 @@ for _ in range(50):
     import random
     data.append(random.gauss(5, 1.5))
 tpl.strip(data, width=40, title="Distribution", color="cyan")
+
+# Example 48: Sankey diagram
+print("\n--- Example 48: Sankey Diagram ---")
+tpl.sankey(
+    ["Revenue", "Costs", "Tax", "Profit"],
+    [
+        {"source": "Revenue", "target": "Costs", "value": 400},
+        {"source": "Revenue", "target": "Tax", "value": 200},
+        {"source": "Revenue", "target": "Profit", "value": 400},
+    ],
+    width=60, title="Cash Flow"
+)
+
+# Example 49: Funnel chart
+print("\n--- Example 49: Funnel Chart ---")
+tpl.funnel(["Awareness", "Interest", "Desire", "Action"],
+           [1000, 500, 200, 50], width=50, title="Sales Pipeline", color="cyan")
+
+# Example 50: Bullet chart
+print("\n--- Example 50: Bullet Chart ---")
+tpl.bullet(["Revenue", "Users", "Satisfaction"],
+           [85, 70, 90], [100, 80, 95], width=60, title="KPI Dashboard")
+
+# Example 51: Donut chart
+print("\n--- Example 51: Donut Chart ---")
+tpl.donut(["Product", "Service", "Subscription", "Other"],
+          [40, 30, 20, 10], title="Revenue Mix", legend=True)
+
+# Example 52: Pareto chart
+print("\n--- Example 52: Pareto Chart ---")
+tpl.pareto(["Issue A", "Issue B", "Issue C", "Issue D"],
+           [50, 30, 15, 5], width=60, title="Bug Priority")
+
+# Example 53: Word cloud
+print("\n--- Example 53: Word Cloud ---")
+tpl.wordcloud({
+    "python": 10, "data": 8, "chart": 5, "terminal": 4,
+    "ascii": 3, "visualization": 3, "library": 2, "open": 2,
+    "source": 2, "code": 1, "tool": 1, "plot": 1,
+}, width=50, title="Tag Cloud")

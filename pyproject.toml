@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "termatplotlib"
-version = "0.5.0"
+version = "0.6.0"
 description = "A lightweight and elegant Python library for rendering stunning ASCII plots directly in your terminal."
 readme = "README.md"
 authors = [

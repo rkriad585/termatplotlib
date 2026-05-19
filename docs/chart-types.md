@@ -369,3 +369,126 @@ tpl.strip(
 ```
 
 Shows summary statistics (n, min, max, range) below the chart. Quick distribution visualization without binning parameters.
+
+---
+
+## sankey
+
+Flow diagram with colored links between source and target nodes.
+
+```python
+tpl.sankey(
+    nodes: List[str],
+    links: List[dict],       # [{source, target, value}]
+    width: Optional[int] = None,
+    title: Optional[str] = None,
+    colors: Optional[List[str]] = None,
+    output_file: Optional[str] = None,
+)
+```
+
+Nodes are arranged in two columns (sources left, targets right). Links are drawn as shaded bands proportional to `value`. A legend shows in/out totals per node.
+
+---
+
+## funnel
+
+Sales/conversion pipeline with centered bars decreasing proportionally.
+
+```python
+tpl.funnel(
+    labels: List[str],
+    values: List[float],
+    width: Optional[int] = None,
+    title: Optional[str] = None,
+    color: Optional[str] = None,
+    show_percent: bool = True,
+    output_file: Optional[str] = None,
+)
+```
+
+Bars are centered and widths scale with value. When `show_percent=True`, each stage shows its percentage relative to the first stage.
+
+---
+
+## bullet
+
+Compact single-measure KPI gauge showing actual value, target marker, and qualitative ranges.
+
+```python
+tpl.bullet(
+    labels: List[str],
+    actuals: List[float],
+    targets: List[float],
+    ranges: Optional[List[dict]] = None,
+    width: Optional[int] = None,
+    title: Optional[str] = None,
+    color_actual: Optional[str] = None,
+    color_target: Optional[str] = None,
+    output_file: Optional[str] = None,
+)
+```
+
+Each metric renders as a horizontal bar with background shading (bad/satisfactory/good), an actual bar, and a target marker (▼). Optional `ranges` parameter overrides default thresholds per metric.
+
+---
+
+## donut
+
+Ring/pie variant with a hollow center. Optional center label and legend.
+
+```python
+tpl.donut(
+    labels: List[str],
+    values: List[float],
+    radius: int = 8,
+    inner_radius: int = 3,
+    title: Optional[str] = None,
+    legend: bool = True,
+    center_label: Optional[str] = None,
+    output_file: Optional[str] = None,
+)
+```
+
+Uses polar rendering with an inner radius cutout. Slices are colored from the standard color sequence. Shows percentage breakdown in legend.
+
+---
+
+## pareto
+
+Priority chart combining sorted descending bars with a cumulative percentage line.
+
+```python
+tpl.pareto(
+    labels: List[str],
+    values: List[float],
+    width: Optional[int] = None,
+    height: int = 15,
+    title: Optional[str] = None,
+    color_bar: Optional[str] = None,
+    color_line: Optional[str] = None,
+    show_80_line: bool = True,
+    output_file: Optional[str] = None,
+)
+```
+
+Values are automatically sorted descending. Cumulative percentage markers (◆) are plotted at each category. The optional 80% reference line helps identify the vital few.
+
+---
+
+## wordcloud
+
+Text visualization placing weighted words onto a grid, sized by frequency.
+
+```python
+tpl.wordcloud(
+    word_weights: Dict[str, float],
+    width: Optional[int] = None,
+    height: int = 10,
+    title: Optional[str] = None,
+    colors: Optional[List[str]] = None,
+    output_file: Optional[str] = None,
+)
+```
+
+Words are placed randomly with collision avoidance. Larger weights use wider display. A ranked legend shows top words with bar-length indicators.

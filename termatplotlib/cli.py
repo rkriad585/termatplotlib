@@ -2,14 +2,15 @@ import argparse
 import sys
 from typing import List
 
-from termatplotlib import bar, scatter, line, pie, hist, sparkline, step, bubble, strip, waterfall, gantt, radar
+from termatplotlib import bar, scatter, line, pie, hist, sparkline, step, bubble, strip, waterfall, gantt, radar, sankey, funnel, bullet, donut, pareto, wordcloud
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="termatplotlib — ASCII plots in your terminal")
     parser.add_argument("--type", "-t", default="bar",
                         choices=["bar", "scatter", "line", "pie", "hist", "sparkline",
-                                 "step", "bubble", "strip", "waterfall", "gantt", "radar"],
+                                 "step", "bubble", "strip", "waterfall", "gantt", "radar",
+                                 "sankey", "funnel", "bullet", "donut", "pareto", "wordcloud"],
                         help="Chart type")
     parser.add_argument("--title", help="Chart title")
     parser.add_argument("--color", help="Chart color")
@@ -98,6 +99,30 @@ def main() -> None:
     elif args.type == "radar":
         labels = args.labels or [str(i) for i in range(len(values))]
         radar(labels, values, **chart_kwargs)
+    elif args.type == "sankey":
+        n = len(values)
+        nodes = args.labels or [f"N{i}" for i in range(n)]
+        links = [{'source': nodes[i], 'target': nodes[(i + 1) % n], 'value': v} for i, v in enumerate(values) if i + 1 < n]
+        sankey(nodes, links, **chart_kwargs)
+    elif args.type == "funnel":
+        labels = args.labels or [str(i) for i in range(len(values))]
+        funnel(labels, values, **chart_kwargs)
+    elif args.type == "donut":
+        labels = args.labels or [str(i) for i in range(len(values))]
+        donut(labels, values, **chart_kwargs)
+    elif args.type == "bullet":
+        labels = args.labels or [str(i) for i in range(len(values[:len(values)//2]))]
+        n = len(labels)
+        actuals = values[:n]
+        targets = values[n:2*n] if len(values) >= 2*n else [max(v * 1.2, 1) for v in actuals]
+        bullet(labels, actuals, targets, **chart_kwargs)
+    elif args.type == "pareto":
+        labels = args.labels or [str(i) for i in range(len(values))]
+        pareto(labels, values, **chart_kwargs)
+    elif args.type == "wordcloud":
+        labels = args.labels or [f"word{i}" for i in range(len(values))]
+        wc = {labels[i]: values[i] for i in range(len(values))}
+        wordcloud(wc, **chart_kwargs)
 
 
 if __name__ == "__main__":

@@ -1,5 +1,25 @@
 # Changelog
 
+## v0.6.0 (2026-05-19)
+
+### Added
+- **Sankey diagram** — `sankey()` flow visualization between source/target nodes with colored links
+- **Funnel chart** — `funnel()` sales pipeline with centered decreasing bars and % conversion
+- **Bullet chart** — `bullet()` compact KPI gauge with qualitative ranges and target marker
+- **Donut chart** — `donut()` pie variant with hole, optional center label, and legend
+- **Pareto chart** — `pareto()` sorted descending bars with cumulative percentage line and 80% reference
+- **Word cloud** — `wordcloud()` text visualization with weighted words placed on a grid
+- **`show_percent`** option on funnel for conversion rate display
+- **`show_80_line`** option on pareto for 80/20 rule reference
+- **`center_label`** option on donut for text in the hole
+- **`color_actual` / `color_target`** options on bullet for custom colors
+
+### Changed
+- CLI expanded to 18 supported chart types (sankey, funnel, bullet, donut, pareto, wordcloud)
+- Updated all docs and README for 28 total chart types
+
+---
+
 ## v0.5.0 (2026-05-19)
 
 ### Added

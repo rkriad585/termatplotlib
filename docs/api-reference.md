@@ -32,6 +32,12 @@ import termatplotlib as tpl
 | `tpl.step()` | Stair-step chart |
 | `tpl.bubble()` | Bubble chart with variable sizes |
 | `tpl.strip()` | 1D strip/dot distribution plot |
+| `tpl.sankey()` | Sankey flow diagram |
+| `tpl.funnel()` | Sales funnel chart |
+| `tpl.bullet()` | KPI bullet/gauge chart |
+| `tpl.donut()` | Donut (ring) chart |
+| `tpl.pareto()` | Pareto chart with cumulative line |
+| `tpl.wordcloud()` | Word cloud text visualization |
 
 ### Figure API
 

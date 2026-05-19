@@ -17,6 +17,12 @@ from termatplotlib.gantt import gantt
 from termatplotlib.step import step
 from termatplotlib.bubble import bubble
 from termatplotlib.strip import strip
+from termatplotlib.sankey import sankey
+from termatplotlib.funnel import funnel
+from termatplotlib.bullet import bullet
+from termatplotlib.donut import donut
+from termatplotlib.pareto import pareto
+from termatplotlib.wordcloud import wordcloud
 from termatplotlib.figure import Figure
 from termatplotlib.utils import (
     COLORS, THEMES, get_terminal_width, strip_ansi,
@@ -43,6 +49,12 @@ __all__ = [
     'step',
     'bubble',
     'strip',
+    'sankey',
+    'funnel',
+    'bullet',
+    'donut',
+    'pareto',
+    'wordcloud',
     'Figure',
     'COLORS', 'THEMES', 'get_terminal_width', 'strip_ansi',
     'set_default', 'get_default', 'reset_defaults', 'apply_theme',

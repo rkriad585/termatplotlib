@@ -4,7 +4,7 @@ A lightweight and elegant Python library for rendering stunning ASCII plots dire
 
 ## Features
 
-- **22 Chart Types** — Bar, grouped bar, stacked bar, diverging bar, vertical bar, scatter, line, pie, histogram, area, box plot, violin plot, heatmap, calendar heatmap, candlestick, sparkline, radar, waterfall, gantt, step chart, bubble chart, strip plot.
+- **28 Chart Types** — Bar, grouped bar, stacked bar, diverging bar, vertical bar, scatter, line, pie, histogram, area, box plot, violin plot, heatmap, calendar heatmap, candlestick, sparkline, radar, waterfall, gantt, step chart, bubble chart, strip plot, sankey, funnel, bullet, donut, pareto, wordcloud.
 - **Logarithmic Axes** — `log_x` / `log_y` for scatter, line, and area charts.
 - **Error Bars** — `error_y` for bar, scatter, and line charts.
 - **Threshold Lines** — Horizontal/vertical reference lines on scatter/line charts.
@@ -187,6 +187,48 @@ tpl.bubble([{'x': [1, 2, 3, 4], 'y': [10, 20, 15, 30],
 tpl.strip([1, 2, 2, 3, 3, 3, 4, 5, 6], width=40, title="Distribution", color="cyan")
 ```
 
+### Sankey Diagram
+```python
+nodes = ["Revenue", "Costs", "Tax", "Profit"]
+links = [
+    {"source": "Revenue", "target": "Costs", "value": 400},
+    {"source": "Revenue", "target": "Tax", "value": 200},
+    {"source": "Revenue", "target": "Profit", "value": 400},
+]
+tpl.sankey(nodes, links, width=60, title="Cash Flow")
+```
+
+### Funnel Chart
+```python
+tpl.funnel(["Awareness", "Interest", "Desire", "Action"],
+           [1000, 500, 200, 50], width=50, title="Sales Pipeline", color="cyan")
+```
+
+### Bullet Chart (KPI Gauge)
+```python
+tpl.bullet(["Revenue", "Users", "Satisfaction"],
+           [85, 70, 90], [100, 80, 95], width=60, title="Dashboard")
+```
+
+### Donut Chart
+```python
+tpl.donut(["Product", "Service", "Subscription", "Other"],
+          [40, 30, 20, 10], title="Revenue Mix", legend=True, center_label="Total")
+```
+
+### Pareto Chart
+```python
+tpl.pareto(["Issue A", "Issue B", "Issue C", "Issue D"],
+           [50, 30, 15, 5], width=60, title="Bug Priority", show_80_line=True)
+```
+
+### Word Cloud
+```python
+tpl.wordcloud({"python": 10, "data": 8, "chart": 5, "terminal": 4,
+               "ascii": 3, "visualization": 3, "library": 2},
+              width=50, title="Tag Cloud")
+```
+
 ### Figure (Multi-Chart Layout)
 ```python
 fig = tpl.Figure(title="Dashboard")
@@ -226,13 +268,13 @@ echo "10,20,15,30,25" | termatplotlib --type bar --labels "A B C D E" --title "D
 | Parameter | Used By | Description |
 |-----------|---------|-------------|
 | `title` | All | Chart title centered at top |
-| `color` | bar, scatter, line, hist, boxplot, heatmap, sparkline, radar, strip | Chart color (named) |
-| `colors` | grouped_bar, stacked_bar, diverging_bar | List of colors per series |
+| `color` | bar, scatter, line, hist, boxplot, heatmap, sparkline, radar, strip, funnel | Chart color (named) |
+| `colors` | grouped_bar, stacked_bar, diverging_bar, sankey, wordcloud | List of colors per series |
 | `colors_list` | radar | List of axis colors |
 | `output_file` | All | Save to file (no ANSI codes) |
-| `legend` | scatter, line, area, pie, step, bubble | Show data legend |
-| `width` | scatter, line, area, boxplot, heatmap, vertical_bar, radar, bubble, gantt | Plot width in chars |
-| `height` | scatter, line, area, hist, boxplot, vertical_bar, violin, candlestick, bubble, strip | Plot height in chars |
+| `legend` | scatter, line, area, pie, step, bubble, donut | Show data legend |
+| `width` | scatter, line, area, boxplot, heatmap, vertical_bar, radar, bubble, gantt, sankey, funnel, bullet, pareto, wordcloud | Plot width in chars |
+| `height` | scatter, line, area, hist, boxplot, vertical_bar, violin, candlestick, bubble, strip, pareto, wordcloud | Plot height in chars |
 | `max_width` | bar, grouped_bar, stacked_bar, diverging_bar, waterfall | Max chart width |
 | `bins` | hist | Number of histogram bins |
 | `marker` | scatter, line, area, bubble (per series) | Point marker character |
@@ -251,6 +293,10 @@ echo "10,20,15,30,25" | termatplotlib --type bar --labels "A B C D E" --title "D
 | `scale_max` | radar | Fixed scale maximum |
 | `bar_char` | gantt | Character for bar drawing |
 | `jitter` | strip | Stack dots in columns |
+| `show_percent` | funnel | Show % of first stage |
+| `color_actual`, `color_target` | bullet | Actual vs target colors |
+| `center_label` | donut | Text in center hole |
+| `show_80_line` | pareto | Show 80% reference line |
 
 ## Configuration System
 
@@ -293,6 +339,12 @@ echo "1 1 1 2 2 3 3 3 3 4 5 5 6" | termatplotlib --type strip --color cyan
 
 # Radar chart from stdin
 echo "8 6 9 5 7" | termatplotlib --type radar --labels "Speed Power Agility Stamina Intel" --color red
+
+# Funnel chart from stdin
+echo "1000 500 200 50" | termatplotlib --type funnel --labels "Aware Interest Desire Action" --color cyan
+
+# Pareto chart from stdin
+echo "50 30 15 5" | termatplotlib --type pareto --labels "A B C D" --width 60 --title "Priority"
 ```
 
 ## Docker
