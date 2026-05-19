@@ -154,3 +154,29 @@ data_box = [
 ]
 tpl.boxplot(data_box, labels=["Group A", "Group B", "Group C"],
             title="Distribution Comparison", color="cyan")
+
+# Example 21: Scatter with grid lines
+print("\n--- Example 21: Scatter with Grid Lines ---")
+x_grid = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+y_grid = [3, 6, 2, 8, 5, 9, 4, 7, 1, 10]
+tpl.scatter([{'x': x_grid, 'y': y_grid, 'color': 'magenta', 'marker': 'o'}],
+            title="With Grid Lines", grid=True)
+
+# Example 22: Line with axis limits
+print("\n--- Example 22: Line with Custom Axis Limits ---")
+x_lim = [1, 2, 3, 4, 5]
+y_lim = [10, 20, 15, 30, 25]
+tpl.line([{'x': x_lim, 'y': y_lim, 'color': 'red', 'marker': '*'}],
+         title="Zoomed View", xlim=(0, 6), ylim=(0, 40))
+
+# Example 23: Line with grid and limits
+print("\n--- Example 23: Line with Grid + Limits ---")
+x_sin = [i * 0.25 for i in range(25)]
+y_sin = [__import__('math').sin(x) for x in x_sin]
+tpl.line([{'x': x_sin, 'y': y_sin, 'color': 'blue', 'marker': '.'}],
+         title="Sine Wave", xlim=(0, 6), ylim=(-1.5, 1.5), grid=True)
+
+# Example 24: Bar with negative values
+print("\n--- Example 24: Bar with Negative Values ---")
+tpl.bar(["Profit", "Loss", "Tax", "Revenue"],
+        [100, -30, -20, 150], title="Financials", color="cyan")

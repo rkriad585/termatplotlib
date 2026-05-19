@@ -1,7 +1,8 @@
 from termatplotlib.utils import COLORS, write_output, get_terminal_width, validate_data, format_plot_lines
 
 
-def scatter(data, width=50, height=20, title=None, xlabel=None, ylabel=None, output_file=None, color=None, legend=False):
+def scatter(data, width=50, height=20, title=None, xlabel=None, ylabel=None,
+            output_file=None, color=None, legend=False, grid=False, xlim=None, ylim=None):
     output = []
     if title:
         output.append(f"\n{title.center(width)}\n")
@@ -13,12 +14,18 @@ def scatter(data, width=50, height=20, title=None, xlabel=None, ylabel=None, out
         write_output(output, output_file)
         return
 
-    min_x, max_x = min(all_x), max(all_x)
-    min_y, max_y = min(all_y), max(all_y)
+    if xlim:
+        min_x, max_x = xlim
+    else:
+        min_x, max_x = min(all_x), max(all_x)
+    if ylim:
+        min_y, max_y = ylim
+    else:
+        min_y, max_y = min(all_y), max(all_y)
     x_range = max_x - min_x
     y_range = max_y - min_y
 
-    grid = [[' ' for _ in range(width)] for _ in range(height)]
+    grid_chart = [[' ' for _ in range(width)] for _ in range(height)]
 
     for series in data:
         sx = series['x']
@@ -32,9 +39,9 @@ def scatter(data, width=50, height=20, title=None, xlabel=None, ylabel=None, out
         for i in range(len(sx)):
             x_scaled = int(((sx[i] - min_x) / x_range) * (width - 1)) if x_range != 0 else 0
             y_scaled = int(((sy[i] - min_y) / y_range) * (height - 1)) if y_range != 0 else 0
-            grid[height - 1 - y_scaled][x_scaled] = color_code + marker + reset_code
+            grid_chart[height - 1 - y_scaled][x_scaled] = color_code + marker + reset_code
 
-    plot_lines = format_plot_lines(grid, width, height, min_x, max_x, min_y, max_y, xlabel, ylabel)
+    plot_lines = format_plot_lines(grid_chart, width, height, min_x, max_x, min_y, max_y, xlabel, ylabel, grid_lines=grid)
     output.extend(plot_lines)
 
     if legend:

@@ -58,10 +58,25 @@ def validate_data(data):
     return all_x, all_y
 
 
-def format_plot_lines(grid, width, height, min_x, max_x, min_y, max_y, xlabel=None, ylabel=None):
+def format_plot_lines(grid, width, height, min_x, max_x, min_y, max_y, xlabel=None, ylabel=None, grid_lines=False):
     output = []
     x_range = max_x - min_x
     y_range = max_y - min_y
+
+    if grid_lines:
+        y_tick_step = height // 5 if height >= 5 else 1
+        x_tick_step = width // 5 if width >= 5 else 1
+        for r in range(height):
+            is_hline = (r % y_tick_step == 0 or r == 0 or r == height - 1)
+            for c in range(width):
+                is_vline = (c % x_tick_step == 0 or c == 0 or c == width - 1)
+                if grid[r][c] == ' ' and (is_hline or is_vline):
+                    if is_hline and is_vline:
+                        grid[r][c] = '+'
+                    elif is_hline:
+                        grid[r][c] = '-'
+                    elif is_vline:
+                        grid[r][c] = '|'
 
     y_label_width = len(f"{max_y:.1f}") + 2
 

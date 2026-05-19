@@ -312,6 +312,48 @@ class TestUtils:
         assert 'blue' in tpl.COLORS
 
 
+class TestGrid:
+    def test_scatter_grid(self):
+        tpl.scatter([{'x': [1, 2, 3], 'y': [4, 5, 6]}], width=20, height=10, grid=True)
+
+    def test_line_grid(self):
+        tpl.line([{'x': [0, 1, 2], 'y': [0, 1, 4]}], width=20, height=10, grid=True)
+
+    def test_area_grid(self):
+        tpl.area([{'x': [0, 1, 2], 'y': [0, 1, 0]}], width=20, height=10, grid=True)
+
+
+class TestAxisLimits:
+    def test_scatter_xlim(self):
+        tpl.scatter([{'x': [1, 2, 3], 'y': [4, 5, 6]}], width=20, height=10, xlim=(0, 10))
+
+    def test_scatter_ylim(self):
+        tpl.scatter([{'x': [1, 2, 3], 'y': [4, 5, 6]}], width=20, height=10, ylim=(0, 20))
+
+    def test_scatter_both_limits(self):
+        tpl.scatter([{'x': [1, 2, 3], 'y': [4, 5, 6]}], width=20, height=10, xlim=(0, 10), ylim=(0, 20))
+
+    def test_line_xlim(self):
+        tpl.line([{'x': [0, 1, 2], 'y': [0, 1, 4]}], width=20, height=10, xlim=(-1, 5))
+
+    def test_line_ylim(self):
+        tpl.line([{'x': [0, 1, 2], 'y': [0, 1, 4]}], width=20, height=10, ylim=(-1, 10))
+
+
+class TestNegativeValues:
+    def test_bar_negative(self):
+        tpl.bar(["A", "B"], [-5, 10], max_width=40)
+
+    def test_bar_all_negative(self):
+        tpl.bar(["A", "B"], [-10, -5], max_width=40)
+
+    def test_grouped_bar_negative(self):
+        tpl.grouped_bar(["A", "B"], [[-10, 20], [15, -5]], max_width=40)
+
+    def test_stacked_bar_negative(self):
+        tpl.stacked_bar(["A", "B"], [[10, 20], [5, -5]], max_width=40)
+
+
 class TestEdgeCases:
     def test_all_charts_render(self):
         """Smoke test - all chart types render without crashing"""
@@ -324,3 +366,9 @@ class TestEdgeCases:
         tpl.stacked_bar(["A"], [[1], [2]], max_width=20)
         tpl.area([{'x': [0, 1], 'y': [0, 1]}], width=10, height=5)
         tpl.boxplot([[1, 2, 3]], width=20, height=10)
+
+    def test_boxplot_identical_values(self):
+        tpl.boxplot([[5, 5, 5, 5], [3, 3, 3]], width=20, height=10)
+
+    def test_hist_single_value(self):
+        tpl.hist([1, 1, 1, 1], bins=3, width=40)

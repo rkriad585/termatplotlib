@@ -30,7 +30,8 @@ def _scale_point(x, y, min_x, max_x, min_y, max_y, width, height):
     return xs, height - 1 - ys
 
 
-def line(data, width=50, height=20, title=None, xlabel=None, ylabel=None, output_file=None, color=None, legend=False):
+def line(data, width=50, height=20, title=None, xlabel=None, ylabel=None,
+         output_file=None, color=None, legend=False, grid=False, xlim=None, ylim=None):
     output = []
     if title:
         output.append(f"\n{title.center(width)}\n")
@@ -42,10 +43,16 @@ def line(data, width=50, height=20, title=None, xlabel=None, ylabel=None, output
         write_output(output, output_file)
         return
 
-    min_x, max_x = min(all_x), max(all_x)
-    min_y, max_y = min(all_y), max(all_y)
+    if xlim:
+        min_x, max_x = xlim
+    else:
+        min_x, max_x = min(all_x), max(all_x)
+    if ylim:
+        min_y, max_y = ylim
+    else:
+        min_y, max_y = min(all_y), max(all_y)
 
-    grid = [[' ' for _ in range(width)] for _ in range(height)]
+    grid_chart = [[' ' for _ in range(width)] for _ in range(height)]
 
     for series in data:
         sx = series['x']
@@ -60,12 +67,12 @@ def line(data, width=50, height=20, title=None, xlabel=None, ylabel=None, output
                   for i in range(len(sx))]
 
         for i in range(len(scaled) - 1):
-            _plot_line_segment(grid, width, height,
+            _plot_line_segment(grid_chart, width, height,
                                scaled[i][0], scaled[i][1],
                                scaled[i + 1][0], scaled[i + 1][1],
                                color_code, marker, reset_code)
 
-    plot_lines = format_plot_lines(grid, width, height, min_x, max_x, min_y, max_y, xlabel, ylabel)
+    plot_lines = format_plot_lines(grid_chart, width, height, min_x, max_x, min_y, max_y, xlabel, ylabel, grid_lines=grid)
     output.extend(plot_lines)
 
     if legend:
@@ -81,7 +88,8 @@ def line(data, width=50, height=20, title=None, xlabel=None, ylabel=None, output
     write_output(output, output_file)
 
 
-def area(data, width=50, height=20, title=None, xlabel=None, ylabel=None, output_file=None, color=None, stacked=False, legend=False):
+def area(data, width=50, height=20, title=None, xlabel=None, ylabel=None,
+         output_file=None, color=None, stacked=False, legend=False, grid=False, xlim=None, ylim=None):
     output = []
     if title:
         output.append(f"\n{title.center(width)}\n")
@@ -102,10 +110,16 @@ def area(data, width=50, height=20, title=None, xlabel=None, ylabel=None, output
                 base[i] = series['y'][i]
         _, all_y = validate_data(data)
 
-    min_x, max_x = min(all_x), max(all_x)
-    min_y, max_y = min(all_y), max(all_y)
+    if xlim:
+        min_x, max_x = xlim
+    else:
+        min_x, max_x = min(all_x), max(all_x)
+    if ylim:
+        min_y, max_y = ylim
+    else:
+        min_y, max_y = min(all_y), max(all_y)
 
-    grid = [[' ' for _ in range(width)] for _ in range(height)]
+    grid_chart = [[' ' for _ in range(width)] for _ in range(height)]
 
     for series in data:
         sx = series['x']
@@ -120,15 +134,15 @@ def area(data, width=50, height=20, title=None, xlabel=None, ylabel=None, output
                   for i in range(len(sx))]
 
         for i in range(len(scaled) - 1):
-            _plot_line_segment(grid, width, height,
+            _plot_line_segment(grid_chart, width, height,
                                scaled[i][0], scaled[i][1],
                                scaled[i + 1][0], scaled[i + 1][1],
                                color_code, marker, reset_code)
 
         fill_char = marker if marker != '*' else '░'
-        _fill_under_segments(grid, width, height, scaled, color_code, fill_char, reset_code)
+        _fill_under_segments(grid_chart, width, height, scaled, color_code, fill_char, reset_code)
 
-    plot_lines = format_plot_lines(grid, width, height, min_x, max_x, min_y, max_y, xlabel, ylabel)
+    plot_lines = format_plot_lines(grid_chart, width, height, min_x, max_x, min_y, max_y, xlabel, ylabel, grid_lines=grid)
     output.extend(plot_lines)
 
     if legend:
