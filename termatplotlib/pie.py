@@ -1,10 +1,18 @@
 import math
+from typing import List, Optional
 
 from termatplotlib.utils import COLORS, COLOR_NAMES, write_output
 
 
-def pie(labels, values, radius=10, title=None, legend=True, output_file=None):
-    output = []
+def pie(
+    labels: List[str],
+    values: List[float],
+    radius: int = 10,
+    title: Optional[str] = None,
+    legend: bool = True,
+    output_file: Optional[str] = None,
+) -> None:
+    output: List[str] = []
     if title:
         output.append(f"\n{title.center(radius * 2)}\n")
 

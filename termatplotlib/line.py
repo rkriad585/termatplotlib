@@ -1,7 +1,20 @@
-from termatplotlib.utils import COLORS, write_output, get_terminal_width, validate_data, format_plot_lines
+from typing import List, Optional, Tuple
+
+from termatplotlib.utils import COLORS, write_output, validate_data, format_plot_lines
 
 
-def _plot_line_segment(grid, width, height, x0, y0, x1, y1, color_code, marker, reset_code):
+def _plot_line_segment(
+    grid: List[List[str]],
+    width: int,
+    height: int,
+    x0: int,
+    y0: int,
+    x1: int,
+    y1: int,
+    color_code: str,
+    marker: str,
+    reset_code: str,
+) -> None:
     dx = abs(x1 - x0)
     dy = -abs(y1 - y0)
     sx = 1 if x0 < x1 else -1
@@ -22,7 +35,16 @@ def _plot_line_segment(grid, width, height, x0, y0, x1, y1, color_code, marker, 
             y0 += sy
 
 
-def _scale_point(x, y, min_x, max_x, min_y, max_y, width, height):
+def _scale_point(
+    x: float,
+    y: float,
+    min_x: float,
+    max_x: float,
+    min_y: float,
+    max_y: float,
+    width: int,
+    height: int,
+) -> Tuple[int, int]:
     x_range = max_x - min_x
     y_range = max_y - min_y
     xs = int(((x - min_x) / x_range) * (width - 1)) if x_range != 0 else 0
@@ -30,9 +52,21 @@ def _scale_point(x, y, min_x, max_x, min_y, max_y, width, height):
     return xs, height - 1 - ys
 
 
-def line(data, width=50, height=20, title=None, xlabel=None, ylabel=None,
-         output_file=None, color=None, legend=False, grid=False, xlim=None, ylim=None):
-    output = []
+def line(
+    data: List[dict],
+    width: int = 50,
+    height: int = 20,
+    title: Optional[str] = None,
+    xlabel: Optional[str] = None,
+    ylabel: Optional[str] = None,
+    output_file: Optional[str] = None,
+    color: Optional[str] = None,
+    legend: bool = False,
+    grid: bool = False,
+    xlim: Optional[Tuple[float, float]] = None,
+    ylim: Optional[Tuple[float, float]] = None,
+) -> None:
+    output: List[str] = []
     if title:
         output.append(f"\n{title.center(width)}\n")
 
@@ -88,9 +122,22 @@ def line(data, width=50, height=20, title=None, xlabel=None, ylabel=None,
     write_output(output, output_file)
 
 
-def area(data, width=50, height=20, title=None, xlabel=None, ylabel=None,
-         output_file=None, color=None, stacked=False, legend=False, grid=False, xlim=None, ylim=None):
-    output = []
+def area(
+    data: List[dict],
+    width: int = 50,
+    height: int = 20,
+    title: Optional[str] = None,
+    xlabel: Optional[str] = None,
+    ylabel: Optional[str] = None,
+    output_file: Optional[str] = None,
+    color: Optional[str] = None,
+    stacked: bool = False,
+    legend: bool = False,
+    grid: bool = False,
+    xlim: Optional[Tuple[float, float]] = None,
+    ylim: Optional[Tuple[float, float]] = None,
+) -> None:
+    output: List[str] = []
     if title:
         output.append(f"\n{title.center(width)}\n")
 
@@ -158,7 +205,15 @@ def area(data, width=50, height=20, title=None, xlabel=None, ylabel=None,
     write_output(output, output_file)
 
 
-def _fill_under_segments(grid, width, height, scaled, color_code, fill_char, reset_code):
+def _fill_under_segments(
+    grid: List[List[str]],
+    width: int,
+    height: int,
+    scaled: List[Tuple[int, int]],
+    color_code: str,
+    fill_char: str,
+    reset_code: str,
+) -> None:
     for i in range(len(scaled) - 1):
         x0, y0 = scaled[i]
         x1, y1 = scaled[i + 1]

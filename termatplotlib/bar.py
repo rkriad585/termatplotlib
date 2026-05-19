@@ -1,11 +1,22 @@
+from typing import List, Optional
+
 from termatplotlib.utils import COLORS, COLOR_NAMES, write_output, get_terminal_width
 
 
-def bar(labels, values, max_width=None, title=None, xlabel=None, ylabel=None, color=None, output_file=None):
+def bar(
+    labels: List[str],
+    values: List[float],
+    max_width: Optional[int] = None,
+    title: Optional[str] = None,
+    xlabel: Optional[str] = None,
+    ylabel: Optional[str] = None,
+    color: Optional[str] = None,
+    output_file: Optional[str] = None,
+) -> None:
     if max_width is None:
         max_width = get_terminal_width()
 
-    output = []
+    output: List[str] = []
     if title:
         output.append(f"\n{title.center(max_width)}\n")
 
@@ -43,11 +54,20 @@ def bar(labels, values, max_width=None, title=None, xlabel=None, ylabel=None, co
     write_output(output, output_file)
 
 
-def grouped_bar(labels, values, max_width=None, title=None, xlabel=None, ylabel=None, colors=None, output_file=None):
+def grouped_bar(
+    labels: List[str],
+    values: List[List[float]],
+    max_width: Optional[int] = None,
+    title: Optional[str] = None,
+    xlabel: Optional[str] = None,
+    ylabel: Optional[str] = None,
+    colors: Optional[List[str]] = None,
+    output_file: Optional[str] = None,
+) -> None:
     if max_width is None:
         max_width = get_terminal_width()
 
-    output = []
+    output: List[str] = []
     if title:
         output.append(f"\n{title.center(max_width)}\n")
 
@@ -103,11 +123,20 @@ def grouped_bar(labels, values, max_width=None, title=None, xlabel=None, ylabel=
     write_output(output, output_file)
 
 
-def stacked_bar(labels, values, max_width=None, title=None, xlabel=None, ylabel=None, colors=None, output_file=None):
+def stacked_bar(
+    labels: List[str],
+    values: List[List[float]],
+    max_width: Optional[int] = None,
+    title: Optional[str] = None,
+    xlabel: Optional[str] = None,
+    ylabel: Optional[str] = None,
+    colors: Optional[List[str]] = None,
+    output_file: Optional[str] = None,
+) -> None:
     if max_width is None:
         max_width = get_terminal_width()
 
-    output = []
+    output: List[str] = []
     if title:
         output.append(f"\n{title.center(max_width)}\n")
 

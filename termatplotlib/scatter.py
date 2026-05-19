@@ -1,9 +1,23 @@
-from termatplotlib.utils import COLORS, write_output, get_terminal_width, validate_data, format_plot_lines
+from typing import List, Optional, Tuple
+
+from termatplotlib.utils import COLORS, write_output, validate_data, format_plot_lines
 
 
-def scatter(data, width=50, height=20, title=None, xlabel=None, ylabel=None,
-            output_file=None, color=None, legend=False, grid=False, xlim=None, ylim=None):
-    output = []
+def scatter(
+    data: List[dict],
+    width: int = 50,
+    height: int = 20,
+    title: Optional[str] = None,
+    xlabel: Optional[str] = None,
+    ylabel: Optional[str] = None,
+    output_file: Optional[str] = None,
+    color: Optional[str] = None,
+    legend: bool = False,
+    grid: bool = False,
+    xlim: Optional[Tuple[float, float]] = None,
+    ylim: Optional[Tuple[float, float]] = None,
+) -> None:
+    output: List[str] = []
     if title:
         output.append(f"\n{title.center(width)}\n")
 

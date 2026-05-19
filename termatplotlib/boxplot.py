@@ -1,9 +1,9 @@
-import math
+from typing import List, Optional, Tuple
 
 from termatplotlib.utils import COLORS, write_output, get_terminal_width
 
 
-def _quartiles(data):
+def _quartiles(data: List[float]) -> Tuple[float, float, float]:
     s = sorted(data)
     n = len(s)
     q2 = s[n // 2] if n % 2 else (s[n // 2 - 1] + s[n // 2]) / 2
@@ -14,8 +14,18 @@ def _quartiles(data):
     return q1, q2, q3
 
 
-def boxplot(data, labels=None, width=50, height=20, title=None, xlabel=None, ylabel=None, output_file=None, color=None):
-    output = []
+def boxplot(
+    data: List[List[float]],
+    labels: Optional[List[str]] = None,
+    width: int = 50,
+    height: int = 20,
+    title: Optional[str] = None,
+    xlabel: Optional[str] = None,
+    ylabel: Optional[str] = None,
+    output_file: Optional[str] = None,
+    color: Optional[str] = None,
+) -> None:
+    output: List[str] = []
     if title:
         output.append(f"\n{title.center(width)}\n")
 
@@ -27,8 +37,8 @@ def boxplot(data, labels=None, width=50, height=20, title=None, xlabel=None, yla
     if labels is None:
         labels = [f"Set {i+1}" for i in range(len(data))]
 
-    stats = []
-    all_vals = []
+    stats: List[Tuple[float, float, float, float, float, float, float]] = []
+    all_vals: List[float] = []
     for d in data:
         if not d:
             output.append("Error: Empty dataset found.")
@@ -70,7 +80,7 @@ def boxplot(data, labels=None, width=50, height=20, title=None, xlabel=None, yla
         left = cx - box_width // 2
         right = cx + box_width // 2
 
-        def y_to_row(val):
+        def y_to_row(val: float) -> int:
             return int((max_val - val) / val_range * (height - 1))
 
         q1_row = y_to_row(q1)
@@ -78,8 +88,6 @@ def boxplot(data, labels=None, width=50, height=20, title=None, xlabel=None, yla
         med_row = y_to_row(med)
         lower_row = y_to_row(lower_whisker)
         upper_row = y_to_row(upper_whisker)
-        mn_row = y_to_row(mn)
-        mx_row = y_to_row(mx)
 
         for r in range(min(q1_row, q3_row), max(q1_row, q3_row) + 1):
             for c in range(left, right + 1):
@@ -117,7 +125,6 @@ def boxplot(data, labels=None, width=50, height=20, title=None, xlabel=None, yla
 
     label_line = " " * y_label_width
     for i, lbl in enumerate(labels):
-        cx_pos = y_label_width + i * group_width + group_width // 2
         label_line += lbl.center(group_width)[:group_width]
     output.append(label_line)
 

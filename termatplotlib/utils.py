@@ -1,5 +1,6 @@
 import re
 import shutil
+from typing import List, Optional, Tuple
 
 ANSI_RE = re.compile(r'\033\[[0-9;]*m')
 
@@ -15,14 +16,14 @@ COLORS = {
     'reset': '\033[0m'
 }
 
-COLOR_NAMES = list(COLORS.keys())[:-1]
+COLOR_NAMES: List[str] = list(COLORS.keys())[:-1]
 
 
-def strip_ansi(text):
+def strip_ansi(text: str) -> str:
     return ANSI_RE.sub('', text)
 
 
-def write_output(output_lines, output_file=None):
+def write_output(output_lines: List[str], output_file: Optional[str] = None) -> None:
     text = "\n".join(output_lines) + "\n"
     if output_file:
         with open(output_file, 'w') as f:
@@ -31,18 +32,18 @@ def write_output(output_lines, output_file=None):
         print(text)
 
 
-def get_terminal_width(default=80):
+def get_terminal_width(default: int = 80) -> int:
     try:
         return shutil.get_terminal_size().columns
     except Exception:
         return default
 
 
-def validate_data(data):
+def validate_data(data: List[dict]) -> Tuple[List[float], List[float]]:
     if not data:
         raise ValueError("Data list cannot be empty.")
-    all_x = []
-    all_y = []
+    all_x: List[float] = []
+    all_y: List[float] = []
     for i, series in enumerate(data):
         if 'x' not in series or 'y' not in series:
             raise ValueError(f"Series {i} is missing 'x' or 'y' keys.")
@@ -58,8 +59,19 @@ def validate_data(data):
     return all_x, all_y
 
 
-def format_plot_lines(grid, width, height, min_x, max_x, min_y, max_y, xlabel=None, ylabel=None, grid_lines=False):
-    output = []
+def format_plot_lines(
+    grid: List[List[str]],
+    width: int,
+    height: int,
+    min_x: float,
+    max_x: float,
+    min_y: float,
+    max_y: float,
+    xlabel: Optional[str] = None,
+    ylabel: Optional[str] = None,
+    grid_lines: bool = False,
+) -> List[str]:
+    output: List[str] = []
     x_range = max_x - min_x
     y_range = max_y - min_y
 

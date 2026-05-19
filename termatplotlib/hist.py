@@ -1,11 +1,24 @@
+from typing import List, Optional
+
 from termatplotlib.utils import COLORS, write_output, get_terminal_width
 
 
-def hist(data, bins=10, width=None, height=10, title=None, xlabel=None, ylabel=None, color=None, char='█', output_file=None):
+def hist(
+    data: List[float],
+    bins: int = 10,
+    width: Optional[int] = None,
+    height: int = 10,
+    title: Optional[str] = None,
+    xlabel: Optional[str] = None,
+    ylabel: Optional[str] = None,
+    color: Optional[str] = None,
+    char: str = '█',
+    output_file: Optional[str] = None,
+) -> None:
     if width is None:
         width = get_terminal_width()
 
-    output = []
+    output: List[str] = []
     if title:
         output.append(f"\n{title.center(width)}\n")
 
