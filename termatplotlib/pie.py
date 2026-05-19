@@ -11,7 +11,8 @@ def pie(
     title: Optional[str] = None,
     legend: bool = True,
     output_file: Optional[str] = None,
-) -> None:
+    _return_output: bool = False,
+) -> Optional[List[str]]:
     output: List[str] = []
     if title:
         output.append(f"\n{title.center(radius * 2)}\n")
@@ -19,7 +20,7 @@ def pie(
     if not labels or not values or len(labels) != len(values):
         output.append("Error: Invalid input. Labels and values must be non-empty and of the same length.")
         write_output(output, output_file)
-        return
+        return (output if _return_output else None)
 
     total = sum(values)
     proportions = [v / total for v in values]
@@ -55,3 +56,4 @@ def pie(
     output.append("\n")
 
     write_output(output, output_file)
+    return (output if _return_output else None)

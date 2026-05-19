@@ -14,7 +14,8 @@ def hist(
     color: Optional[str] = None,
     char: str = '█',
     output_file: Optional[str] = None,
-) -> None:
+    _return_output: bool = False,
+) -> Optional[List[str]]:
     if width is None:
         width = get_terminal_width()
 
@@ -25,13 +26,13 @@ def hist(
     if not data:
         output.append("Error: Input data cannot be empty.")
         write_output(output, output_file)
-        return
+        return (output if _return_output else None)
 
     min_val, max_val = min(data), max(data)
     if min_val == max_val:
         output.append("Error: All data points are the same, cannot create meaningful bins.")
         write_output(output, output_file)
-        return
+        return (output if _return_output else None)
 
     bin_range = (max_val - min_val) / bins
     counts = [0] * bins
@@ -51,7 +52,7 @@ def hist(
     if max_count == 0:
         output.append("No data points fell into any bin.")
         write_output(output, output_file)
-        return
+        return (output if _return_output else None)
 
     scale = height / max_count
     color_code = COLORS.get(color, '')
@@ -96,3 +97,4 @@ def hist(
     output.append("\n")
 
     write_output(output, output_file)
+    return (output if _return_output else None)

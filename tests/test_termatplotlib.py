@@ -354,6 +354,168 @@ class TestNegativeValues:
         tpl.stacked_bar(["A", "B"], [[10, 20], [5, -5]], max_width=40)
 
 
+class TestConfig:
+    def test_set_and_get_default(self):
+        tpl.set_default(color='red', width=100)
+        assert tpl.get_default('color') == 'red'
+        assert tpl.get_default('width') == 100
+        tpl.reset_defaults()
+        assert tpl.get_default('color') is None
+
+    def test_reset_defaults(self):
+        tpl.set_default(color='blue')
+        tpl.reset_defaults()
+        assert tpl.get_default('color') is None
+
+    def test_config_affects_scatter(self):
+        tpl.set_default(width=20, height=10)
+        tpl.scatter([{'x': [1, 2], 'y': [3, 4]}])
+        tpl.reset_defaults()
+
+    def test_config_affects_bar(self):
+        tpl.set_default(color='green')
+        tpl.bar(["A"], [5], max_width=40)
+        tpl.reset_defaults()
+
+
+class TestLogScale:
+    def test_scatter_log_x(self):
+        tpl.scatter([{'x': [1, 10, 100], 'y': [1, 2, 3]}], width=20, height=10, log_x=True)
+
+    def test_scatter_log_y(self):
+        tpl.scatter([{'x': [1, 2, 3], 'y': [1, 10, 100]}], width=20, height=10, log_y=True)
+
+    def test_scatter_log_both(self):
+        tpl.scatter([{'x': [1, 10, 100], 'y': [1, 10, 100]}], width=20, height=10, log_x=True, log_y=True)
+
+    def test_line_log_x(self):
+        tpl.line([{'x': [1, 10, 100], 'y': [0, 1, 2]}], width=20, height=10, log_x=True)
+
+    def test_line_log_y(self):
+        tpl.line([{'x': [0, 1, 2], 'y': [1, 10, 100]}], width=20, height=10, log_y=True)
+
+    def test_area_log_y(self):
+        tpl.area([{'x': [0, 1, 2], 'y': [1, 10, 100]}], width=20, height=10, log_y=True)
+
+    def test_log_scale_with_xlim(self):
+        tpl.scatter([{'x': [1, 10, 100], 'y': [1, 2, 3]}], width=20, height=10, log_x=True, xlim=(1, 200))
+
+    def test_log_scale_non_positive_error(self):
+        tpl.scatter([{'x': [0, 1, 2], 'y': [1, 2, 3]}], width=20, height=10, log_x=True)
+
+    def test_log_output_file_no_ansi(self):
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.txt', delete=False) as f:
+            path = f.name
+        try:
+            tpl.scatter([{'x': [1, 10, 100], 'y': [1, 2, 3]}], width=20, height=10, log_x=True, output_file=path)
+            content = _read_file(path)
+            assert not _has_ansi(content)
+        finally:
+            os.unlink(path)
+
+    def test_line_log_scale_with_grid(self):
+        tpl.line([{'x': [1, 10, 100], 'y': [1, 10, 100]}], width=20, height=10, log_x=True, log_y=True, grid=True)
+
+
+class TestErrorBars:
+    def test_bar_error_y_single(self):
+        tpl.bar(["A", "B"], [10, 20], max_width=40, error_y=2)
+
+    def test_bar_error_y_list(self):
+        tpl.bar(["A", "B"], [10, 20], max_width=40, error_y=[1, 3])
+
+    def test_bar_error_y_file_output(self):
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.txt', delete=False) as f:
+            path = f.name
+        try:
+            tpl.bar(["A", "B"], [10, 20], max_width=40, error_y=1.5, output_file=path)
+            content = _read_file(path)
+            assert not _has_ansi(content)
+        finally:
+            os.unlink(path)
+
+    def test_scatter_error_y(self):
+        tpl.scatter([{'x': [1, 2, 3], 'y': [4, 5, 6], 'error_y': 1}], width=20, height=10)
+
+    def test_scatter_error_y_list(self):
+        tpl.scatter([{'x': [1, 2, 3], 'y': [4, 5, 6], 'error_y': [0.5, 1, 1.5]}], width=20, height=10)
+
+    def test_line_error_y(self):
+        tpl.line([{'x': [0, 1, 2], 'y': [0, 1, 4], 'error_y': 0.5}], width=20, height=10)
+
+
+class TestHeatmap:
+    def test_basic_heatmap(self):
+        data = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+        tpl.heatmap(data)
+
+    def test_heatmap_with_labels(self):
+        data = [[1, 2], [3, 4]]
+        tpl.heatmap(data, row_labels=["A", "B"], col_labels=["X", "Y"])
+
+    def test_heatmap_with_title(self):
+        tpl.heatmap([[1, 2], [3, 4]], title="Test Heatmap")
+
+    def test_heatmap_with_color(self):
+        tpl.heatmap([[1, 2], [3, 4]], color="red")
+
+    def test_heatmap_empty(self):
+        tpl.heatmap([], width=40)
+
+    def test_heatmap_uneven_rows(self):
+        tpl.heatmap([[1, 2], [3]], width=40)
+
+    def test_heatmap_output_file(self):
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.txt', delete=False) as f:
+            path = f.name
+        try:
+            tpl.heatmap([[1, 2], [3, 4]], output_file=path)
+            content = _read_file(path)
+            assert not _has_ansi(content)
+        finally:
+            os.unlink(path)
+
+    def test_heatmap_single_value(self):
+        tpl.heatmap([[5]], width=40)
+
+    def test_heatmap_constant_values(self):
+        tpl.heatmap([[1, 1], [1, 1]], width=40)
+
+    def test_heatmap_with_palette(self):
+        tpl.heatmap([[1, 2, 3], [4, 5, 6]], palette=["red", "blue"])
+
+
+class TestFigure:
+    def test_figure_basic(self):
+        fig = tpl.Figure(title="Multi-Chart")
+        fig.add_chart(tpl.bar, ["A", "B"], [10, 20], max_width=40)
+        fig.add_chart(tpl.pie, ["X", "Y"], [30, 70])
+        fig.render()
+
+    def test_figure_savefig(self):
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.txt', delete=False) as f:
+            path = f.name
+        try:
+            fig = tpl.Figure()
+            fig.add_chart(tpl.bar, ["A"], [5], max_width=40)
+            fig.savefig(path)
+            content = _read_file(path)
+            assert not _has_ansi(content)
+        finally:
+            os.unlink(path)
+
+    def test_figure_chaining(self):
+        fig = tpl.Figure().add_chart(tpl.bar, ["A"], [5], max_width=40)
+        fig.render()
+
+    def test_figure_multiple_charts(self):
+        fig = tpl.Figure(title="Three Charts")
+        fig.add_chart(tpl.bar, ["A", "B"], [5, 10], max_width=40, color="red")
+        fig.add_chart(tpl.scatter, [{'x': [1, 2], 'y': [3, 4]}], width=20, height=10)
+        fig.add_chart(tpl.pie, ["A", "B"], [30, 70])
+        fig.render()
+
+
 class TestEdgeCases:
     def test_all_charts_render(self):
         """Smoke test - all chart types render without crashing"""
@@ -366,6 +528,7 @@ class TestEdgeCases:
         tpl.stacked_bar(["A"], [[1], [2]], max_width=20)
         tpl.area([{'x': [0, 1], 'y': [0, 1]}], width=10, height=5)
         tpl.boxplot([[1, 2, 3]], width=20, height=10)
+        tpl.heatmap([[1]], width=20)
 
     def test_boxplot_identical_values(self):
         tpl.boxplot([[5, 5, 5, 5], [3, 3, 3]], width=20, height=10)

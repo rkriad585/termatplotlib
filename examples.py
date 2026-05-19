@@ -180,3 +180,54 @@ tpl.line([{'x': x_sin, 'y': y_sin, 'color': 'blue', 'marker': '.'}],
 print("\n--- Example 24: Bar with Negative Values ---")
 tpl.bar(["Profit", "Loss", "Tax", "Revenue"],
         [100, -30, -20, 150], title="Financials", color="cyan")
+
+# Example 25: Bar with error bars
+print("\n--- Example 25: Bar with Error Bars ---")
+tpl.bar(["A", "B", "C"], [10, 20, 15], max_width=40, color="green", error_y=[1, 2, 1.5])
+
+# Example 26: Scatter with log scale
+print("\n--- Example 26: Scatter with Log-Y Scale ---")
+tpl.scatter([{'x': [1, 2, 3, 4, 5], 'y': [1, 10, 100, 1000, 10000], 'marker': 'o'}],
+            width=40, height=15, title="Log Scale", log_y=True)
+
+# Example 27: Scatter with error bars
+print("\n--- Example 27: Scatter with Error Bars ---")
+tpl.scatter([{'x': [1, 2, 3, 4, 5], 'y': [2, 4, 6, 8, 10], 'error_y': 0.5, 'marker': 'o'}],
+            width=30, height=15, title="With Error Bars")
+
+# Example 28: Line with log scale and grid
+print("\n--- Example 28: Line with Log-Log and Grid ---")
+import math
+x_log = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+y_log = [x**2 for x in x_log]
+tpl.line([{'x': x_log, 'y': y_log, 'color': 'blue', 'marker': '.'}],
+         title="Quadratic (Log-Log)", log_x=True, log_y=True, grid=True, width=40, height=15)
+
+# Example 29: Heatmap
+print("\n--- Example 29: Heatmap ---")
+data_heat = [[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12]]
+tpl.heatmap(data_heat, row_labels=["Row1", "Row2", "Row3"],
+            col_labels=["Col1", "Col2", "Col3", "Col4"],
+            title="Basic Heatmap", color="cyan")
+
+# Example 30: Heatmap with custom palette
+print("\n--- Example 30: Heatmap with Palette ---")
+tpl.heatmap([[1, 5, 9], [2, 6, 10], [3, 7, 11], [4, 8, 12]],
+            title="Heatmap with Palette", palette=["red", "yellow", "green"])
+
+# Example 31: Figure with multiple charts
+print("\n--- Example 31: Multi-Figure Dashboard ---")
+fig = tpl.Figure(title="Dashboard")
+fig.add_chart(tpl.bar, ["Q1", "Q2", "Q3", "Q4"], [150, 200, 175, 250],
+              max_width=40, color="blue")
+fig.add_chart(tpl.pie, ["Sales", "Marketing", "R&D", "Support"], [40, 25, 20, 15],
+              radius=8)
+fig.render()
+
+# Example 32: Figure saved to file
+print("\n--- Example 32: Figure saved to file ---")
+fig2 = tpl.Figure(title="Report")
+fig2.add_chart(tpl.bar, ["A", "B"], [10, 20], max_width=40)
+fig2.add_chart(tpl.hist, [1, 2, 2, 3, 3, 3, 4, 5], bins=4, width=40)
+fig2.savefig("report.txt")
+print("Saved to report.txt")

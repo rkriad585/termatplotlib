@@ -1,6 +1,6 @@
-from typing import List, Optional
+from typing import List, Optional, Union
 
-from termatplotlib.utils import COLORS, COLOR_NAMES, write_output, get_terminal_width
+from termatplotlib.utils import COLORS, COLOR_NAMES, write_output, get_terminal_width, get_default
 
 
 def bar(
@@ -12,9 +12,11 @@ def bar(
     ylabel: Optional[str] = None,
     color: Optional[str] = None,
     output_file: Optional[str] = None,
-) -> None:
-    if max_width is None:
-        max_width = get_terminal_width()
+    error_y: Optional[Union[float, List[float]]] = None,
+    _return_output: bool = False,
+) -> Optional[List[str]]:
+    max_width = get_default('max_width') or max_width or get_terminal_width()
+    color = get_default('color') or color
 
     output: List[str] = []
     if title:
@@ -23,7 +25,7 @@ def bar(
     if not labels or not values or len(labels) != len(values):
         output.append("Error: Invalid input. Labels and values must be non-empty and of the same length.")
         write_output(output, output_file)
-        return
+        return (output if _return_output else None)
 
     max_label_len = max(len(str(label)) for label in labels)
     abs_values = [abs(v) for v in values]
@@ -39,19 +41,24 @@ def bar(
     if ylabel:
         output.append(f"{ylabel.rjust(max_label_len)}")
 
-    for label, value in zip(labels, values):
+    for i, (label, value) in enumerate(zip(labels, values)):
         bar_len = int(abs(value) * scale)
         bar_str = '█' * bar_len
         if value < 0:
             bar_str = color_code + bar_str + reset_code + ' <'
         else:
             bar_str = color_code + bar_str + reset_code
-        output.append(f"{str(label):<{max_label_len}} | {bar_str} {value}")
+        suffix = f" {value}"
+        if error_y is not None:
+            err = error_y[i] if isinstance(error_y, list) else error_y
+            suffix += f" ±{err}"
+        output.append(f"{str(label):<{max_label_len}} | {bar_str}{suffix}")
 
     if xlabel:
         output.append(f"\n{xlabel.center(max_width)}")
 
     write_output(output, output_file)
+    return (output if _return_output else None)
 
 
 def grouped_bar(

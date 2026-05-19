@@ -24,7 +24,8 @@ def boxplot(
     ylabel: Optional[str] = None,
     output_file: Optional[str] = None,
     color: Optional[str] = None,
-) -> None:
+    _return_output: bool = False,
+) -> Optional[List[str]]:
     output: List[str] = []
     if title:
         output.append(f"\n{title.center(width)}\n")
@@ -32,7 +33,7 @@ def boxplot(
     if not data:
         output.append("Error: Input data cannot be empty.")
         write_output(output, output_file)
-        return
+        return (output if _return_output else None)
 
     if labels is None:
         labels = [f"Set {i+1}" for i in range(len(data))]
@@ -43,7 +44,7 @@ def boxplot(
         if not d:
             output.append("Error: Empty dataset found.")
             write_output(output, output_file)
-            return
+            return (output if _return_output else None)
         mn, mx = min(d), max(d)
         q1, med, q3 = _quartiles(d)
         iqr = q3 - q1
@@ -138,3 +139,4 @@ def boxplot(
     output.append("")
 
     write_output(output, output_file)
+    return (output if _return_output else None)

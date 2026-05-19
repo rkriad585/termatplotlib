@@ -1,6 +1,7 @@
+import math
 from typing import List, Optional, Tuple
 
-from termatplotlib.utils import COLORS, write_output, validate_data, format_plot_lines
+from termatplotlib.utils import COLORS, write_output, validate_data, format_plot_lines, get_default
 
 
 def _plot_line_segment(
@@ -52,6 +53,15 @@ def _scale_point(
     return xs, height - 1 - ys
 
 
+def _transform_log(vals: List[float], label: str) -> List[float]:
+    out = []
+    for v in vals:
+        if v <= 0:
+            raise ValueError(f"{label} contains non-positive value {v} — log scale requires positive values")
+        out.append(math.log10(v))
+    return out
+
+
 def line(
     data: List[dict],
     width: int = 50,
@@ -65,7 +75,16 @@ def line(
     grid: bool = False,
     xlim: Optional[Tuple[float, float]] = None,
     ylim: Optional[Tuple[float, float]] = None,
-) -> None:
+    log_x: bool = False,
+    log_y: bool = False,
+    _return_output: bool = False,
+) -> Optional[List[str]]:
+    width = get_default('width') or width
+    height = get_default('height') or height
+    color = get_default('color') or color
+    legend = get_default('legend') or legend
+    grid = get_default('grid') or grid
+
     output: List[str] = []
     if title:
         output.append(f"\n{title.center(width)}\n")
@@ -75,14 +94,33 @@ def line(
     except ValueError as e:
         output.append(f"Error: {e}")
         write_output(output, output_file)
-        return
+        return (output if _return_output else None)
+
+    if log_x:
+        try:
+            all_x = _transform_log(all_x, "x data")
+            for series in data:
+                series['x'] = _transform_log(series['x'], "x data")
+        except ValueError as e:
+            output.append(f"Error: {e}")
+            write_output(output, output_file)
+            return (output if _return_output else None)
+    if log_y:
+        try:
+            all_y = _transform_log(all_y, "y data")
+            for series in data:
+                series['y'] = _transform_log(series['y'], "y data")
+        except ValueError as e:
+            output.append(f"Error: {e}")
+            write_output(output, output_file)
+            return (output if _return_output else None)
 
     if xlim:
-        min_x, max_x = xlim
+        min_x, max_x = (math.log10(xlim[0]), math.log10(xlim[1])) if log_x else xlim
     else:
         min_x, max_x = min(all_x), max(all_x)
     if ylim:
-        min_y, max_y = ylim
+        min_y, max_y = (math.log10(ylim[0]), math.log10(ylim[1])) if log_y else ylim
     else:
         min_y, max_y = min(all_y), max(all_y)
 
@@ -93,6 +131,7 @@ def line(
         sy = series['y']
         series_color = series.get('color') or color or 'white'
         marker = series.get('marker', '*')
+        error_y = series.get('error_y')
 
         color_code = COLORS.get(series_color, '')
         reset_code = COLORS['reset'] if color_code else ''
@@ -106,7 +145,28 @@ def line(
                                scaled[i + 1][0], scaled[i + 1][1],
                                color_code, marker, reset_code)
 
-    plot_lines = format_plot_lines(grid_chart, width, height, min_x, max_x, min_y, max_y, xlabel, ylabel, grid_lines=grid)
+        if error_y is not None:
+            for i in range(len(sx)):
+                err = error_y[i] if isinstance(error_y, list) else error_y
+                if log_y and err > 0:
+                    low = sy[i] - math.log10(10 ** sy[i] - err) if (10 ** sy[i] - err) > 0 else -999
+                    high = math.log10(10 ** sy[i] + err) - sy[i] if (10 ** sy[i] + err) > 0 else 999
+                    err_low = low
+                    err_high = high
+                else:
+                    err_low = err_high = err
+                xs, ys = scaled[i]
+                y_low = int(((sy[i] - err_low - min_y) / max(max_y - min_y, 1)) * (height - 1)) if max_y != min_y else 0
+                y_high = int(((sy[i] + err_high - min_y) / max(max_y - min_y, 1)) * (height - 1)) if max_y != min_y else 0
+                for yb in range(min(y_low, y_high), max(y_low, y_high) + 1):
+                    row = height - 1 - yb
+                    if 0 <= row < height and 0 <= xs < width:
+                        grid_chart[row][xs] = color_code + '|' + reset_code
+
+    plot_lines = format_plot_lines(
+        grid_chart, width, height, min_x, max_x, min_y, max_y,
+        xlabel, ylabel, grid_lines=grid, log_x=log_x, log_y=log_y,
+    )
     output.extend(plot_lines)
 
     if legend:
@@ -120,6 +180,7 @@ def line(
         output.append("")
 
     write_output(output, output_file)
+    return (output if _return_output else None)
 
 
 def area(
@@ -136,7 +197,16 @@ def area(
     grid: bool = False,
     xlim: Optional[Tuple[float, float]] = None,
     ylim: Optional[Tuple[float, float]] = None,
-) -> None:
+    log_x: bool = False,
+    log_y: bool = False,
+    _return_output: bool = False,
+) -> Optional[List[str]]:
+    width = get_default('width') or width
+    height = get_default('height') or height
+    color = get_default('color') or color
+    legend = get_default('legend') or legend
+    grid = get_default('grid') or grid
+
     output: List[str] = []
     if title:
         output.append(f"\n{title.center(width)}\n")
@@ -146,7 +216,26 @@ def area(
     except ValueError as e:
         output.append(f"Error: {e}")
         write_output(output, output_file)
-        return
+        return (output if _return_output else None)
+
+    if log_x:
+        try:
+            all_x = _transform_log(all_x, "x data")
+            for series in data:
+                series['x'] = _transform_log(series['x'], "x data")
+        except ValueError as e:
+            output.append(f"Error: {e}")
+            write_output(output, output_file)
+            return (output if _return_output else None)
+    if log_y:
+        try:
+            all_y = _transform_log(all_y, "y data")
+            for series in data:
+                series['y'] = _transform_log(series['y'], "y data")
+        except ValueError as e:
+            output.append(f"Error: {e}")
+            write_output(output, output_file)
+            return (output if _return_output else None)
 
     if stacked:
         n = len(data[0]['x'])
@@ -158,11 +247,11 @@ def area(
         _, all_y = validate_data(data)
 
     if xlim:
-        min_x, max_x = xlim
+        min_x, max_x = (math.log10(xlim[0]), math.log10(xlim[1])) if log_x else xlim
     else:
         min_x, max_x = min(all_x), max(all_x)
     if ylim:
-        min_y, max_y = ylim
+        min_y, max_y = (math.log10(ylim[0]), math.log10(ylim[1])) if log_y else ylim
     else:
         min_y, max_y = min(all_y), max(all_y)
 
@@ -189,7 +278,10 @@ def area(
         fill_char = marker if marker != '*' else '░'
         _fill_under_segments(grid_chart, width, height, scaled, color_code, fill_char, reset_code)
 
-    plot_lines = format_plot_lines(grid_chart, width, height, min_x, max_x, min_y, max_y, xlabel, ylabel, grid_lines=grid)
+    plot_lines = format_plot_lines(
+        grid_chart, width, height, min_x, max_x, min_y, max_y,
+        xlabel, ylabel, grid_lines=grid, log_x=log_x, log_y=log_y,
+    )
     output.extend(plot_lines)
 
     if legend:
@@ -203,6 +295,7 @@ def area(
         output.append("")
 
     write_output(output, output_file)
+    return (output if _return_output else None)
 
 
 def _fill_under_segments(

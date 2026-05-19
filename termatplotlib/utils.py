@@ -1,6 +1,7 @@
+import math
 import re
 import shutil
-from typing import List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 ANSI_RE = re.compile(r'\033\[[0-9;]*m')
 
@@ -17,6 +18,20 @@ COLORS = {
 }
 
 COLOR_NAMES: List[str] = list(COLORS.keys())[:-1]
+
+_DEFAULTS: Dict[str, Any] = {}
+
+
+def set_default(**kwargs: Any) -> None:
+    _DEFAULTS.update(kwargs)
+
+
+def get_default(key: str) -> Any:
+    return _DEFAULTS.get(key)
+
+
+def reset_defaults() -> None:
+    _DEFAULTS.clear()
 
 
 def strip_ansi(text: str) -> str:
@@ -59,6 +74,20 @@ def validate_data(data: List[dict]) -> Tuple[List[float], List[float]]:
     return all_x, all_y
 
 
+def _format_tick_label(val: float, log_scale: bool) -> str:
+    if log_scale:
+        if val <= 0:
+            return "0"
+        actual = 10 ** val
+        if actual >= 1e6 or actual <= 1e-4:
+            return f"{actual:.1e}"
+        elif actual == int(actual):
+            return str(int(actual))
+        else:
+            return f"{actual:.2f}"
+    return f"{val:.1f}"
+
+
 def format_plot_lines(
     grid: List[List[str]],
     width: int,
@@ -70,6 +99,8 @@ def format_plot_lines(
     xlabel: Optional[str] = None,
     ylabel: Optional[str] = None,
     grid_lines: bool = False,
+    log_x: bool = False,
+    log_y: bool = False,
 ) -> List[str]:
     output: List[str] = []
     x_range = max_x - min_x
@@ -90,14 +121,15 @@ def format_plot_lines(
                     elif is_vline:
                         grid[r][c] = '|'
 
-    y_label_width = len(f"{max_y:.1f}") + 2
+    sample_label = _format_tick_label(max_y if not log_y else max_y, log_y)
+    y_label_width = len(sample_label) + 2
 
     display_grid = [[' ' for _ in range(width + y_label_width)] for _ in range(height)]
 
     for r in range(height):
         y_val = min_y + (height - 1 - r) * (y_range / max(height - 1, 1))
         if r % (height // 5 if height >= 5 else 1) == 0 or r == 0 or r == height - 1:
-            label = f"{y_val:.1f}"
+            label = _format_tick_label(y_val, log_y)
             for i, char in enumerate(label):
                 if i < y_label_width:
                     display_grid[r][i] = char
@@ -114,7 +146,7 @@ def format_plot_lines(
     for c in range(width):
         x_val = min_x + c * x_tick_interval
         if c % (width // 5 if width >= 5 else 1) == 0 or c == 0 or c == width - 1:
-            label = f"{x_val:.1f}"
+            label = _format_tick_label(x_val, log_x)
             start = c + y_label_width
             if start + len(label) < len(x_labels_line):
                 for i, char in enumerate(label):
